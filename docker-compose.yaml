@@ -34,10 +34,9 @@ services:
 
   # Spark
   spark:
-    image: bitnami/spark:latest
+    image: bitnami/spark:3.5.0
     container_name: spark
     volumes:
-      - ./environment.env:/environment.env
       - ./hadoop/bin:/opt/spark/hadoop/bin
       - ./Scripts:/opt/spark/scripts
     ports:
