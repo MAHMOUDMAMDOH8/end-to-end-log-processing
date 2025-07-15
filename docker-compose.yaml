@@ -3,34 +3,34 @@ networks:
     name: BigData-network
     driver: bridge
 
-services:
-  # HDFS NameNode
-  namenode:
-    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
-    container_name: namenode
-    environment:
-      - CLUSTER_NAME=bigdata-cluster
-    volumes:
-      - hdfs-namenode:/hadoop/dfs/name
-    ports:
-      - "9870:9870"
-      - "8020:8020"
-    networks:
-      - BigData-network
+# services:
+#   # HDFS NameNode
+#   namenode:
+#     image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+#     container_name: namenode
+#     environment:
+#       - CLUSTER_NAME=bigdata-cluster
+#     volumes:
+#       - hdfs-namenode:/hadoop/dfs/name
+#     ports:
+#       - "9870:9870"
+#       - "8020:8020"
+#     networks:
+#       - BigData-network
 
-  # HDFS DataNode
-  datanode:
-    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
-    container_name: datanode
-    environment:
-      - CLUSTER_NAME=bigdata-cluster
-      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
-    volumes:
-      - hdfs-datanode:/hadoop/dfs/data
-    networks:
-      - BigData-network
-    depends_on:
-      - namenode
+#   # HDFS DataNode
+#   datanode:
+#     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+#     container_name: datanode
+#     environment:
+#       - CLUSTER_NAME=bigdata-cluster
+#       - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+#     volumes:
+#       - hdfs-datanode:/hadoop/dfs/data
+#     networks:
+#       - BigData-network
+#     depends_on:
+#       - namenode
 
   # Spark
   spark:
@@ -49,8 +49,8 @@ services:
     networks:
       - BigData-network
     depends_on:
-      - namenode
-      - datanode
+      - kafka
+      - cassandra
 
   # Zookeeper
   zookeeper:
@@ -98,107 +98,107 @@ services:
     networks:
       - BigData-network
 
-  # PostgreSQL for Airflow
-  postgres:
-    image: postgres:13
-    container_name: postgres
-    environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    networks:
-      - BigData-network
+  # # PostgreSQL for Airflow
+  # postgres:
+  #   image: postgres:13
+  #   container_name: postgres
+  #   environment:
+  #     POSTGRES_USER: airflow
+  #     POSTGRES_PASSWORD: airflow
+  #     POSTGRES_DB: airflow
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - BigData-network
 
-  # Airflow Init
-  airflow-init:
-    build: .
-    container_name: airflow-init
-    env_file:
-      - ./environment.env
-    entrypoint: /bin/bash
-    command:
-      - -c
-      - |
-        mkdir -p /opt/airflow/{logs,dags,plugins}
-        chown -R "${AIRFLOW_UID:-50000}:0" /opt/airflow
-        exec /entrypoint airflow db migrate && airflow users create \
-          --username airflow \
-          --password airflow \
-          --firstname Airflow \
-          --lastname Admin \
-          --role Admin \
-          --email admin@example.com
-    environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
-      AIRFLOW__CORE__FERNET_KEY: ''
-    user: "0:0"
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./plugins:/opt/airflow/plugins
-      - ./environment.env:/opt/airflow/environment.env
-      - ./Scripts:/opt/airflow/scripts
-      - ./dbt:/opt/airflow/dbt
-    networks:
-      - BigData-network
-    depends_on:
-      - postgres
+  # # Airflow Init
+  # airflow-init:
+  #   build: .
+  #   container_name: airflow-init
+  #   env_file:
+  #     - ./environment.env
+  #   entrypoint: /bin/bash
+  #   command:
+  #     - -c
+  #     - |
+  #       mkdir -p /opt/airflow/{logs,dags,plugins}
+  #       chown -R "${AIRFLOW_UID:-50000}:0" /opt/airflow
+  #       exec /entrypoint airflow db migrate && airflow users create \
+  #         --username airflow \
+  #         --password airflow \
+  #         --firstname Airflow \
+  #         --lastname Admin \
+  #         --role Admin \
+  #         --email admin@example.com
+  #   environment:
+  #     AIRFLOW__CORE__EXECUTOR: LocalExecutor
+  #     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+  #     AIRFLOW__CORE__FERNET_KEY: ''
+  #   user: "0:0"
+  #   volumes:
+  #     - ./dags:/opt/airflow/dags
+  #     - ./logs:/opt/airflow/logs
+  #     - ./plugins:/opt/airflow/plugins
+  #     - ./environment.env:/opt/airflow/environment.env
+  #     - ./Scripts:/opt/airflow/scripts
+  #     - ./dbt:/opt/airflow/dbt
+  #   networks:
+  #     - BigData-network
+  #   depends_on:
+  #     - postgres
 
-  # Airflow Webserver
-  airflow-webserver:
-    build: .
-    container_name: airflow-webserver
-    env_file:
-      - ./environment.env
-    command: standalone
-    ports:
-      - "8082:8080"
-    restart: always
-    depends_on:
-      airflow-init:
-        condition: service_completed_successfully
-    environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
-      AIRFLOW__WEBSERVER__SECRET_KEY: 1234
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./plugins:/opt/airflow/plugins
-      - ./environment.env:/opt/airflow/environment.env
-      - ./Scripts:/opt/airflow/scripts
-      - ./dbt:/opt/airflow/dbt
-    networks:
-      - BigData-network
+  # # Airflow Webserver
+  # airflow-webserver:
+  #   build: .
+  #   container_name: airflow-webserver
+  #   env_file:
+  #     - ./environment.env
+  #   command: standalone
+  #   ports:
+  #     - "8082:8080"
+  #   restart: always
+  #   depends_on:
+  #     airflow-init:
+  #       condition: service_completed_successfully
+  #   environment:
+  #     AIRFLOW__CORE__EXECUTOR: LocalExecutor
+  #     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+  #     AIRFLOW__WEBSERVER__SECRET_KEY: 1234
+  #   volumes:
+  #     - ./dags:/opt/airflow/dags
+  #     - ./logs:/opt/airflow/logs
+  #     - ./plugins:/opt/airflow/plugins
+  #     - ./environment.env:/opt/airflow/environment.env
+  #     - ./Scripts:/opt/airflow/scripts
+  #     - ./dbt:/opt/airflow/dbt
+  #   networks:
+  #     - BigData-network
 
-  # Airflow Scheduler
-  airflow-scheduler:
-    build: .
-    container_name: airflow-scheduler
-    env_file:
-      - ./environment.env
-    command: scheduler
-    restart: always
-    depends_on:
-      airflow-init:
-        condition: service_completed_successfully
-    environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./plugins:/opt/airflow/plugins
-      - ./environment.env:/opt/airflow/environment.env
-      - ./Scripts:/opt/airflow/scripts
-      - ./dbt:/opt/airflow/dbt
-    networks:
-      - BigData-network
+  # # Airflow Scheduler
+  # airflow-scheduler:
+  #   build: .
+  #   container_name: airflow-scheduler
+  #   env_file:
+  #     - ./environment.env
+  #   command: scheduler
+  #   restart: always
+  #   depends_on:
+  #     airflow-init:
+  #       condition: service_completed_successfully
+  #   environment:
+  #     AIRFLOW__CORE__EXECUTOR: LocalExecutor
+  #     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+  #   volumes:
+  #     - ./dags:/opt/airflow/dags
+  #     - ./logs:/opt/airflow/logs
+  #     - ./plugins:/opt/airflow/plugins
+  #     - ./environment.env:/opt/airflow/environment.env
+  #     - ./Scripts:/opt/airflow/scripts
+  #     - ./dbt:/opt/airflow/dbt
+  #   networks:
+  #     - BigData-network
 
   # Cassandra
   cassandra:
@@ -217,6 +217,36 @@ services:
       - "9160:9160"   
     volumes:
       - cassandra_data:/var/lib/cassandra
+      - ./cassandra_setup.cql:/opt/cassandra_setup.cql
+    networks:
+      - BigData-network
+
+  # Cassandra Setup
+  cassandra-setup:
+    image: cassandra:4.1
+    container_name: cassandra-setup
+    volumes:
+      - ./cassandra_setup.cql:/opt/cassandra_setup.cql
+    networks:
+      - BigData-network
+    depends_on:
+      - cassandra
+    command: >
+      bash -c "
+        echo 'Waiting for Cassandra to be ready...' &&
+        sleep 60 &&
+        cqlsh cassandra -f /opt/cassandra_setup.cql &&
+        echo 'Cassandra setup completed!'
+      "
+
+  # Spark Consumer Application
+  spark-consumer:
+    image: bitnami/spark:4.0.0  # Using your existing Spark image
+    container_name: spark-consumer
+    environment:
+      - SPARK_MODE=standalone
+    volumes:
+      - ./Scripts:/opt/spark/scripts
     networks:
       - BigData-network
 

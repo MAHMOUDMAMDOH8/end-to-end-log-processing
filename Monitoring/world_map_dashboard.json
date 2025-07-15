@@ -1,0 +1,285 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "E-commerce Global Activity World Map",
+    "tags": [
+      "ecommerce",
+      "geography",
+      "world-map"
+    ],
+    "style": "dark",
+    "timezone": "",
+    "refresh": "30s",
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "\ud83c\udf0d Global E-commerce Traffic Distribution",
+        "type": "geomap",
+        "gridPos": {
+          "h": 12,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "${DS_CASSANDRA}"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "rawSql": "SELECT 'Egypt' as country, 30.0444 as latitude, 31.2357 as longitude, COUNT(*) as value FROM logs.ecomm_log WHERE geo_country = 'Egypt' ALLOW FILTERING",
+            "format": "table"
+          },
+          {
+            "refId": "B",
+            "rawSql": "SELECT 'USA' as country, 40.7128 as latitude, -74.0060 as longitude, COUNT(*) as value FROM logs.ecomm_log WHERE geo_country = 'US' ALLOW FILTERING",
+            "format": "table"
+          },
+          {
+            "refId": "C",
+            "rawSql": "SELECT 'UK' as country, 51.5074 as latitude, -0.1278 as longitude, COUNT(*) as value FROM logs.ecomm_log WHERE geo_country = 'UK' ALLOW FILTERING",
+            "format": "table"
+          }
+        ],
+        "options": {
+          "view": {
+            "id": "zero",
+            "lat": 25,
+            "lon": 15,
+            "zoom": 2
+          },
+          "basemap": {
+            "name": "Layer 0",
+            "type": "default"
+          },
+          "layers": [
+            {
+              "name": "Activity Markers",
+              "type": "markers",
+              "config": {
+                "style": {
+                  "color": {
+                    "fixed": "green"
+                  },
+                  "size": {
+                    "field": "value",
+                    "min": 8,
+                    "max": 30
+                  },
+                  "opacity": 0.8
+                }
+              },
+              "location": {
+                "mode": "coords",
+                "latitude": "latitude",
+                "longitude": "longitude"
+              }
+            }
+          ]
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "continuous-GrYlRd"
+            },
+            "min": 0,
+            "max": 60
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "\ud83d\udcca Activity by Country",
+        "type": "table",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 12
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "${DS_CASSANDRA}"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "rawSql": "SELECT 'Egypt \ud83c\uddea\ud83c\uddec' as country, COUNT(*) as events FROM logs.ecomm_log WHERE geo_country = 'Egypt' ALLOW FILTERING UNION ALL SELECT 'USA \ud83c\uddfa\ud83c\uddf8' as country, COUNT(*) as events FROM logs.ecomm_log WHERE geo_country = 'US' ALLOW FILTERING",
+            "format": "table"
+          }
+        ],
+        "fieldConfig": {
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "events"
+              },
+              "properties": [
+                {
+                  "id": "custom.displayMode",
+                  "value": "gradient-gauge"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "continuous-GrYlRd"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "title": "\ud83e\udd67 Geographic Distribution",
+        "type": "piechart",
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 12
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "${DS_CASSANDRA}"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "rawSql": "SELECT COUNT(*) as Egypt FROM logs.ecomm_log WHERE geo_country = 'Egypt' ALLOW FILTERING",
+            "format": "table"
+          },
+          {
+            "refId": "B",
+            "rawSql": "SELECT COUNT(*) as International FROM logs.ecomm_log WHERE geo_country != 'Egypt' ALLOW FILTERING",
+            "format": "table"
+          }
+        ],
+        "options": {
+          "pieType": "donut",
+          "legend": {
+            "displayMode": "table",
+            "placement": "right"
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "\ud83c\udf0d Total Global Events",
+        "type": "stat",
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 0,
+          "y": 20
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "${DS_CASSANDRA}"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "rawSql": "SELECT COUNT(*) as total_events FROM logs.ecomm_log",
+            "format": "table"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 50
+                },
+                {
+                  "color": "red",
+                  "value": 100
+                }
+              ]
+            },
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "\ud83c\uddea\ud83c\uddec Egypt Hotspot",
+        "type": "stat",
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 8,
+          "y": 20
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "${DS_CASSANDRA}"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "rawSql": "SELECT COUNT(*) as egypt_events FROM logs.ecomm_log WHERE geo_country = 'Egypt' ALLOW FILTERING",
+            "format": "table"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "green",
+              "mode": "fixed"
+            },
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "\ud83c\udf10 International",
+        "type": "stat",
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 16,
+          "y": 20
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "${DS_CASSANDRA}"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "rawSql": "SELECT COUNT(*) as intl_events FROM logs.ecomm_log WHERE geo_country != 'Egypt' ALLOW FILTERING",
+            "format": "table"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "blue",
+              "mode": "fixed"
+            },
+            "unit": "short"
+          }
+        }
+      }
+    ]
+  },
+  "folderId": 0,
+  "overwrite": true
+}

@@ -91,14 +91,14 @@ flat_df = par_df.select(
 
 print("Starting streaming queries...")
 
-# Write to HDFS
-query_hdfs = par_df.writeStream \
-    .format("json") \
-    .option("path", "hdfs://namenode:8020/event_data") \
-    .option("checkpointLocation", "hdfs://namenode:8020/event_data/checkpoint") \
-    .outputMode("append") \
-    .trigger(processingTime="10 seconds") \
-    .start()
+# # Write to HDFS
+# query_hdfs = par_df.writeStream \
+#     .format("json") \
+#     .option("path", "hdfs://namenode:8020/event_data") \
+#     .option("checkpointLocation", "hdfs://namenode:8020/event_data/checkpoint") \
+#     .outputMode("append") \
+#     .trigger(processingTime="10 seconds") \
+#     .start()
 
 # Write to Cassandra
 query_cassandra = flat_df.writeStream \
@@ -113,5 +113,5 @@ query_cassandra = flat_df.writeStream \
 print("Both HDFS and Cassandra streaming queries started!")
 
 # Wait for termination
-query_hdfs.awaitTermination()
+# query_hdfs.awaitTermination()
 query_cassandra.awaitTermination()
