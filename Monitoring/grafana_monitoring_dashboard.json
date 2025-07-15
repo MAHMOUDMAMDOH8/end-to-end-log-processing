@@ -1,0 +1,972 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 1,
+    "links": [],
+    "panels": [
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 6,
+        "panels": [
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "percentage",
+                  "steps": [
+                    {
+                      "color": "dark-red"
+                    },
+                    {
+                      "color": "orange",
+                      "value": 70
+                    },
+                    {
+                      "color": "red",
+                      "value": 85
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 4,
+              "x": 0,
+              "y": 1
+            },
+            "id": 3,
+            "options": {
+              "colorMode": "background",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT COUNT(*) FROM logs.users"
+              }
+            ],
+            "title": "Total Users",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 4,
+              "x": 4,
+              "y": 1
+            },
+            "id": 8,
+            "options": {
+              "colorMode": "background",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT COUNT(*) FROM logs.products"
+              }
+            ],
+            "title": "Total Products",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 6,
+              "x": 8,
+              "y": 1
+            },
+            "id": 13,
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT COUNT(*) FROM logs.products WHERE category = 'Fashion' ALLOW FILTERING"
+              }
+            ],
+            "title": "Fashion Products ",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "none"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 5,
+              "x": 14,
+              "y": 1
+            },
+            "id": 11,
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "center",
+              "orientation": "vertical",
+              "percentChangeColorMode": "same_as_value",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT COUNT(*) FROM logs.products WHERE category = 'Electronics' ALLOW FILTERING"
+              }
+            ],
+            "title": "Electronics Products",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "fieldMinMax": false,
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 5,
+              "x": 19,
+              "y": 1
+            },
+            "id": 12,
+            "options": {
+              "colorMode": "background",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT COUNT(*) FROM logs.products WHERE category = 'Beauty' ALLOW FILTERING"
+              }
+            ],
+            "title": "Beauty Products",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  }
+                },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 9,
+              "w": 10,
+              "x": 0,
+              "y": 19
+            },
+            "id": 9,
+            "options": {
+              "legend": {
+                "displayMode": "list",
+                "placement": "right",
+                "showLegend": true,
+                "values": [
+                  "percent"
+                ]
+              },
+              "pieType": "pie",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT category, product_count FROM logs.product_category_summary"
+              }
+            ],
+            "title": "Products by Category",
+            "type": "piechart"
+          },
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 9,
+              "w": 14,
+              "x": 10,
+              "y": 19
+            },
+            "id": 10,
+            "options": {
+              "displayMode": "gradient",
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": false
+              },
+              "maxVizHeight": 300,
+              "minVizHeight": 16,
+              "minVizWidth": 8,
+              "namePlacement": "auto",
+              "orientation": "horizontal",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showUnfilled": true,
+              "sizing": "auto",
+              "valueMode": "color"
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT category, avg_price FROM logs.product_category_summary"
+              }
+            ],
+            "title": " Average Price by Category",
+            "type": "bargauge"
+          },
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "auto"
+                  },
+                  "inspect": false
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 24,
+              "x": 0,
+              "y": 28
+            },
+            "id": 4,
+            "options": {
+              "cellHeight": "sm",
+              "footer": {
+                "countRows": false,
+                "fields": "",
+                "reducer": [
+                  "sum"
+                ],
+                "show": false
+              },
+              "showHeader": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT country, city, user_count, avg_age FROM logs.user_city_summary WHERE country = 'Egypt'"
+              }
+            ],
+            "title": "Users by City",
+            "type": "table"
+          }
+        ],
+        "title": "STATISTICS ANALYTICS",
+        "type": "row"
+      },
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 1
+        },
+        "id": 20,
+        "panels": [
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "fixedColor": "dark-red",
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "semi-dark-red"
+                    },
+                    {
+                      "color": "dark-red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 5,
+              "x": 0,
+              "y": 2
+            },
+            "id": 16,
+            "options": {
+              "colorMode": "background",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT COUNT(*) FROM logs.ecomm_log"
+              }
+            ],
+            "title": "Total Events",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "mappings": [],
+                "max": 58,
+                "min": 10,
+                "thresholds": {
+                  "mode": "percentage",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "orange",
+                      "value": 70
+                    },
+                    {
+                      "color": "red",
+                      "value": 85
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 6,
+              "x": 5,
+              "y": 2
+            },
+            "id": 17,
+            "options": {
+              "minVizHeight": 75,
+              "minVizWidth": 75,
+              "orientation": "auto",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showThresholdLabels": false,
+              "showThresholdMarkers": true,
+              "sizing": "auto"
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT COUNT(*) FROM logs.ecomm_log WHERE event_type = 'purchase' ALLOW FILTERING"
+              }
+            ],
+            "title": "Purchase Events",
+            "type": "gauge"
+          },
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-red"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 5,
+              "x": 11,
+              "y": 2
+            },
+            "id": 22,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT COUNT(*) FROM logs.ecomm_log WHERE level = 'ERROR' ALLOW FILTERING"
+              }
+            ],
+            "title": "ERROR ALERT MONITOR",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-red"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 5,
+              "x": 16,
+              "y": 2
+            },
+            "id": 23,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "limit": 25,
+                "values": true
+              },
+              "showPercentChange": false,
+              "textMode": "value",
+              "wideLayout": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT COUNT(*) as recent_activity \nFROM logs.ecomm_log \nWHERE timestamp > '2024-12-20T12:00:00Z' \nALLOW FILTERING"
+              }
+            ],
+            "title": "ACTIVITY HEATMAP",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-red"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 3,
+              "x": 21,
+              "y": 2
+            },
+            "id": 19,
+            "options": {
+              "colorMode": "background",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT COUNT(*) FROM logs.ecomm_log WHERE timestamp > '2025-07-15' ALLOW FILTERING"
+              }
+            ],
+            "title": " Today's Events",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "hadesarchitect-cassandra-datasource",
+              "uid": "ees0o6c7pp62oe"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "color-background"
+                  },
+                  "filterable": true,
+                  "inspect": false
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 24,
+              "x": 0,
+              "y": 8
+            },
+            "id": 21,
+            "options": {
+              "cellHeight": "lg",
+              "footer": {
+                "countRows": false,
+                "enablePagination": true,
+                "fields": "",
+                "reducer": [
+                  "sum"
+                ],
+                "show": false
+              },
+              "showHeader": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasourceId": 1,
+                "queryType": "query",
+                "rawQuery": true,
+                "refId": "A",
+                "target": "SELECT timestamp, event_type, user_id, geo_city, details_amount \nFROM logs.ecomm_log \n"
+              }
+            ],
+            "title": " LIVE EVENT STREAM",
+            "type": "table"
+          }
+        ],
+        "title": "EVENT MONITORING",
+        "type": "row"
+      }
+    ],
+    "preload": false,
+    "schemaVersion": 41,
+    "tags": [],
+    "templating": {
+      "list": []
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "New dashboard",
+    "uid": "670b3e23-b1a7-44c2-b05a-4103987ee003",
+    "version": 25
+  }
