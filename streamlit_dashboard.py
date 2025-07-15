@@ -286,7 +286,7 @@ def create_world_map(geo_df):
 
 def main():
     # Header
-    st.markdown('<h1 class="main-header">E-commerce JSON Data Dashboard</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">Log E-commerce Data </h1>', unsafe_allow_html=True)
     
     # Load data
     with st.spinner("Loading data..."):
