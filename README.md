@@ -18,20 +18,19 @@ This project is an end-to-end big data pipeline for processing, storing, and ana
 
 ```mermaid
 graph TD
-    A[Log Producer (Python)] --Kafka--> B[Kafka Broker]
-    B --Stream--> C[Spark Structured Streaming Consumer]
-    C --Raw Logs--> D[HDFS]
-    C --Flattened Logs--> E[Cassandra]
-    D -.-> F[Batch Processing: Airflow]
-    F --ETL--> P[PostgreSQL]
-    P --dbt Transform--> Q[dbt Models]
-    Q --ODBC/JDBC--> R[Power BI]
-    E -.-> G[Grafana / BI Tools]
-    subgraph Orchestration
-        H[Airflow]
-    end
-    H -.-> C
-    H -.-> F
+  A[Log Generator] --> B[Kafka]
+  B --> C[PySpark Streaming]
+  C --> D[Cassandra<br>Real-time Store]
+  D --> E[Grafana<br>Real-time Monitoring]
+  C --> F[HDFS<br>Raw Log Storage]
+  F --> G[airflow Batch Job]
+  G --> H[PostgreSQL<br>Analytics DB]
+  H --> I[dbt Models]
+  I --> J[Power BI<br>Business Reports]
+  style A fill:#f9f,stroke:#333
+  style E fill:#ccf,stroke:#333
+  style J fill:#ccf,stroke:#333
+
 ```
 
 ## Directory Structure
