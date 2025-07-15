@@ -50,9 +50,10 @@ spark = SparkSession.builder \
 df = spark \
     .readStream \
     .format("kafka") \
-    .option("kafka.bootstrap.servers", "172.19.0.8:9092") \
+    .option("kafka.bootstrap.servers", "kafka:9092") \
     .option("subscribe", "LogEvents") \
     .option("startingOffsets", "latest") \
+    .option("failOnDataLoss", "false") \
     .load()
 
 par_df = df.select(
@@ -60,33 +61,35 @@ par_df = df.select(
 ).select("data.*")
 
 # Flatten the DataFrame for Cassandra (Cassandra doesn't support nested objects)
+print(par_df.printSchema())
 flat_df = par_df.select(
-    col("timestamp"),
-    col("level"),
-    col("service"),
-    col("event_type"),
-    col("user_id"),
-    col("session_id"),
-    col("product_id"),
-    col("session_duration"),
-    col("device_type"),
-    col("geo_location.country").alias("geo_country"),
-    col("geo_location.city").alias("geo_city"),
-    col("details.amount").alias("details_amount"),
-    col("details.payment_method").alias("details_payment_method"),
-    to_json(col("details.items")).alias("details_items"),
-    col("details.order_id").alias("details_order_id"),
-    col("details.query").alias("details_query"),
-    col("details.results_count").alias("details_results_count"),
-    col("details.shipping_method").alias("details_shipping_method"),
-    col("details.delivery_estimate").alias("details_delivery_estimate"),
-    col("details.completed_at").alias("details_completed_at"),
-    col("details.shipping_address").alias("details_shipping_address"),
-    col("details.attempted_amount").alias("attempted_amount"),
-    col("details.failed_at").alias("failed_at"),
-    col("error_code"),
-    col("message"),
-    col("error_at")
+    par_df["timestamp"],
+    par_df["level"],
+    par_df["service"],
+    par_df["event_type"],
+    par_df["user_id"],
+    par_df["session_id"],
+    par_df["product_id"],
+    par_df["session_duration"],
+    par_df["device_type"],
+    par_df["geo_location.country"].alias("geo_country"),
+    par_df["geo_location.city"].alias("geo_city"),
+    par_df["details.amount"].alias("details_amount"),
+    par_df["details.payment_method"].alias("details_payment_method"),
+    par_df["details.items"].alias("details_items"),
+    par_df["details.order_id"].alias("details_order_id"),
+    par_df["details.query"].alias("details_query"),
+    par_df["details.results_count"].alias("details_results_count"),
+    par_df["details.shipping_method"].alias("details_shipping_method"),
+    par_df["details.delivery_estimate"].alias("details_delivery_estimate"),
+    par_df["details.completed_at"].alias("details_completed_at"),
+    par_df["details.shipping_address"].alias("details_shipping_address"),
+    par_df["details.attempted_amount"].alias("attempted_amount"),
+    par_df["details.failed_at"].alias("failed_at"),
+    par_df["error_code"],
+    par_df["message"],
+    par_df["error_at"]
+    
 )
 
 print("Starting streaming queries...")

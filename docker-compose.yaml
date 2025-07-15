@@ -144,6 +144,7 @@ services:
       - ./environment.env:/opt/airflow/environment.env
       - ./Scripts:/opt/airflow/scripts
       - ./dbt:/opt/airflow/dbt
+      - ./postgresql-42.7.3.jar:/tmp/postgresql-42.7.3.jar
     networks:
       - BigData-network
     depends_on:
@@ -166,6 +167,8 @@ services:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
       AIRFLOW__WEBSERVER__SECRET_KEY: 1234
+      _AIRFLOW_WWW_USER_USERNAME: airflow
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
@@ -173,6 +176,8 @@ services:
       - ./environment.env:/opt/airflow/environment.env
       - ./Scripts:/opt/airflow/scripts
       - ./dbt:/opt/airflow/dbt
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./postgresql-42.7.3.jar:/tmp/postgresql-42.7.3.jar
     networks:
       - BigData-network
 
@@ -197,6 +202,8 @@ services:
       - ./environment.env:/opt/airflow/environment.env
       - ./Scripts:/opt/airflow/scripts
       - ./dbt:/opt/airflow/dbt
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./postgresql-42.7.3.jar:/tmp/postgresql-42.7.3.jar
     networks:
       - BigData-network
 

@@ -109,6 +109,14 @@ python3 Consumer.py
 ### 6. Batch Processing: HDFS to PostgreSQL (Every 10 Minutes)
 
 Airflow is configured to run a DAG every 10 minutes that:
+```docker exec -it airflow-webserver airflow users create \
+  --username airflow \
+  --password airflow \
+  --firstname Airflow \
+  --lastname Admin \
+  --role Admin \
+  --email admin@example.com
+```
 - Reads new data from HDFS
 - Loads it into PostgreSQL for analytics
 
