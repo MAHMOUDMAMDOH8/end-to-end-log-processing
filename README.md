@@ -12,45 +12,101 @@ This project is an end-to-end big data pipeline for processing, storing, and ana
 - **dbt** for data transformation and modeling
 - **Airflow** for workflow orchestration (including batch jobs)
 - **Docker Compose** for easy multi-service orchestration
+- **Grafana** for real-time monitoring and visualization
 - **Power BI** for business intelligence and visualization
 
 ## Architecture Diagram
 
 ```mermaid
 graph TD
-  A[Log Generator] --> B[Kafka]
-  B --> C[PySpark Streaming]
-  C --> D[Cassandra<br>Real-time Store]
-  D --> E[Grafana<br>Real-time Monitoring]
-  C --> F[HDFS<br>Raw Log Storage]
-  F --> G[airflow Batch Job]
-  G --> H[PostgreSQL<br>Analytics DB]
-  H --> I[dbt Models]
-  I --> J[Power BI<br>Business Reports]
-  style A fill:#f9f,stroke:#333
-  style E fill:#ccf,stroke:#333
-  style J fill:#ccf,stroke:#333
+    A[📊 Log Generator] --> B[🔄 Kafka]
+    B --> C[⚡ Spark Structured Streaming]
+    C --> D[📈 Cassandra<br/>Real-time Store]
+    D --> E[📊 Grafana<br/>Real-time Monitoring]
+    C --> F[🗄️ HDFS<br/>Raw Log Storage]
+    F --> G[🛠️ Airflow Batch Job]
+    G --> H[📊 PostgreSQL<br/>Analytics DB]
+    H --> I[🔄 dbt Models]
+    I --> J[📈 Power BI<br/>Business Reports]
+    
+    style A fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style B fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    style C fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    style D fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style E fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    style F fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    style G fill:#e0f2f1,stroke:#004d40,stroke-width:2px
+    style H fill:#e3f2fd,stroke:#0d47a1,stroke-width:2px
+    style I fill:#fafafa,stroke:#424242,stroke-width:2px
+    style J fill:#fff8e1,stroke:#f57f17,stroke-width:2px
+```
 
+## Real-Time Monitoring Dashboard
+
+Our system includes comprehensive real-time monitoring capabilities through Grafana:
+
+![Event Monitoring Dashboard](Monitoring/EVENTMONITORING.png)
+
+*Real-time event monitoring dashboard showing live metrics, event counts, and system performance*
+
+## Analytics & Statistics Dashboard
+
+Advanced analytics and statistical insights are available through our dedicated analytics dashboard:
+
+![Statistics Analytics Dashboard](Monitoring/STATISTICS_ANALYTICS.png)
+
+*Comprehensive analytics dashboard displaying key business metrics, user behavior patterns, and performance statistics*
+
+## Data Flow Architecture
+
+```mermaid
+sequenceDiagram
+    participant LG as Log Generator
+    participant K as Kafka
+    participant SS as Spark Streaming
+    participant C as Cassandra
+    participant H as HDFS
+    participant A as Airflow
+    participant P as PostgreSQL
+    participant G as Grafana
+    participant PB as Power BI
+
+    LG->>K: Send log events
+    K->>SS: Stream events
+    SS->>C: Store processed data
+    SS->>H: Store raw logs
+    C->>G: Real-time metrics
+    H->>A: Trigger batch job
+    A->>P: Load analytics data
+    P->>PB: Business reports
 ```
 
 ## Directory Structure
 
 ```
-Scripts/
-  produser/
-    Producer.py      # Kafka producer for log events
-    logs.py          # Log generator logic
-    users.json, products.json  # Sample data
-  Consumer/
-    Consumer.py      # Spark Structured Streaming consumer
-cassandra_setup.cql  # Cassandra schema setup
-setup_cassandra.sh   # Helper script to initialize Cassandra
-docker-compose.yaml  # Multi-service orchestration
-dockerfile           # Custom Docker build for Airflow
-dags/                # Airflow DAGs for batch processing
-  batch_hdfs_to_postgres.py  # Example DAG for batch ETL
-  ...
-dbt/                 # dbt project for transformations
+end-to-end-log-processing/
+├── Scripts/
+│   ├── produser/
+│   │   ├── Producer.py          # Kafka producer for log events
+│   │   ├── logs.py              # Log generator logic
+│   │   ├── users.json           # Sample user data
+│   │   └── products.json        # Sample product data
+│   ├── Consumer/
+│   │   └── Consumer.py          # Spark Structured Streaming consumer
+│   └── spark_jop/
+│       └── batch_jop.py         # Batch processing job
+├── Monitoring/
+│   ├── EVENTMONITORING.png      # Event monitoring dashboard
+│   ├── STATISTICS_ANALYTICS.png # Analytics dashboard
+│   ├── grafana_monitoring_dashboard.json
+│   ├── world_map_dashboard.json
+│   └── grafana_dashboard_queries.cql
+├── dags/                        # Airflow DAGs
+├── dbt/                         # dbt project for transformations
+├── cassandra_setup.cql          # Cassandra schema setup
+├── setup_cassandra.sh           # Cassandra initialization script
+├── docker-compose.yaml          # Multi-service orchestration
+└── dockerfile                   # Custom Docker build for Airflow
 ```
 
 ## Prerequisites
@@ -58,6 +114,7 @@ dbt/                 # dbt project for transformations
 - Docker & Docker Compose
 - Python 3.8+ (for running scripts outside containers, if needed)
 - Power BI Desktop (for analytics)
+- Grafana (included in Docker setup)
 
 ## Quick Start
 
@@ -74,7 +131,7 @@ cd end-to-end-log-processing
 docker-compose up -d
 ```
 
-This will start all required services: Kafka, Zookeeper, Spark, HDFS (NameNode/DataNode), Cassandra, Airflow, PostgreSQL, and more.
+This will start all required services: Kafka, Zookeeper, Spark, HDFS (NameNode/DataNode), Cassandra, Airflow, PostgreSQL, Grafana, and more.
 
 ### 3. Initialize Cassandra
 
@@ -106,29 +163,37 @@ cd /opt/spark/scripts/Consumer
 python3 Consumer.py
 ```
 
-### 6. Batch Processing: HDFS to PostgreSQL (Every 10 Minutes)
+### 6. Monitor Real-Time Data
+
+Access the Grafana monitoring dashboards:
+
+- **Grafana UI**: [http://localhost:3000](http://localhost:3000)
+  - Username: `admin`
+  - Password: `admin`
+
+The dashboards include:
+- Real-time event monitoring
+- Statistical analytics
+- Geographic data visualization
+- Performance metrics
+
+### 7. Batch Processing: HDFS to PostgreSQL (Every 10 Minutes)
 
 Airflow is configured to run a DAG every 10 minutes that:
-```docker exec -it airflow-webserver airflow users create \
-  --username airflow \
-  --password airflow \
-  --firstname Airflow \
-  --lastname Admin \
-  --role Admin \
-  --email admin@example.com
-```
 - Reads new data from HDFS
 - Loads it into PostgreSQL for analytics
 
-You can find and customize the DAG in `dags/batch_hdfs_to_postgres.py`.
+You can find and customize the DAG in `dags/spark_batch_job_dag.py`.
 
-Airflow UI: [http://localhost:8082](http://localhost:8082)
+**Airflow UI**: [http://localhost:8082](http://localhost:8082)
+- Username: `airflow`
+- Password: `airflow`
 
-### 7. Data Transformation with dbt
+### 8. Data Transformation with dbt
 
 After data lands in PostgreSQL, dbt is used for data modeling and transformation. The dbt project is located in the `dbt/` directory.
 
-To run dbt transformations (from within the Airflow or dbt container):
+To run dbt transformations:
 
 ```bash
 docker exec -it <airflow-or-dbt-container> bash
@@ -138,28 +203,52 @@ cd /opt/airflow/dbt
 dbt run
 ```
 
-### 8. Analytics with Power BI
+### 9. Analytics with Power BI
 
 - Connect Power BI Desktop to the PostgreSQL database (host: `localhost`, port: `5432`, user: `airflow`, password: `airflow`, db: `airflow`).
 - Build dashboards and reports on top of the dbt models.
 
-### 9. Accessing the Services
+### 10. Accessing the Services
 
-- **Spark UI**: [http://localhost:8080](http://localhost:8080)
-- **HDFS NameNode UI**: [http://localhost:9870](http://localhost:9870)
-- **Cassandra**: Port 9042 (use `cqlsh` or a GUI client)
-- **PostgreSQL**: Port 5432 (use `psql` or a GUI client)
-- **Kafka**: Port 9092 (internal), 29092 (external)
-- **Airflow UI**: [http://localhost:8082](http://localhost:8082)
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| **Spark UI** | [http://localhost:8080](http://localhost:8080) | - |
+| **HDFS NameNode UI** | [http://localhost:9870](http://localhost:9870) | - |
+| **Grafana** | [http://localhost:3000](http://localhost:3000) | admin/admin |
+| **Airflow UI** | [http://localhost:8082](http://localhost:8082) | airflow/airflow |
+| **Cassandra** | Port 9042 | - |
+| **PostgreSQL** | Port 5432 | airflow/airflow |
+| **Kafka** | Port 9092 (internal), 29092 (external) | - |
 
 ## Data Flow
 
-1. **Producer** generates logs and sends them to Kafka topic `LogEvents`.
-2. **Consumer** reads from Kafka, parses and flattens the data, writes raw logs to HDFS and processed logs to Cassandra.
-3. **Airflow** runs a batch job every 10 minutes to move new data from HDFS to PostgreSQL.
-4. **dbt** transforms and models the data in PostgreSQL.
-5. **Power BI** connects to PostgreSQL for analytics and visualization.
-6. **Cassandra** table `logs.ecomm_log` is indexed for fast queries on event type, user, product, etc.
+1. **📊 Producer** generates logs and sends them to Kafka topic `LogEvents`.
+2. **⚡ Consumer** reads from Kafka, parses and flattens the data, writes raw logs to HDFS and processed logs to Cassandra.
+3. **📈 Grafana** provides real-time monitoring and visualization of the streaming data.
+4. **🛠️ Airflow** runs a batch job every 10 minutes to move new data from HDFS to PostgreSQL.
+5. **🔄 dbt** transforms and models the data in PostgreSQL.
+6. **📊 Power BI** connects to PostgreSQL for analytics and visualization.
+7. **📈 Cassandra** table `logs.ecomm_log` is indexed for fast queries on event type, user, product, etc.
+
+## Monitoring & Analytics Features
+
+### Real-Time Monitoring
+- **Event Count Tracking**: Monitor events by type, user, and geographic location
+- **Performance Metrics**: Track processing latency and throughput
+- **Error Monitoring**: Real-time alerting for system issues
+- **Geographic Visualization**: World map showing user activity by country
+
+### Statistical Analytics
+- **User Behavior Analysis**: Session duration, product interactions
+- **Revenue Tracking**: Purchase amounts, payment methods
+- **Search Analytics**: Query patterns, result counts
+- **Error Analysis**: Error codes, failure rates
+
+### Dashboard Features
+- **Real-time Updates**: Live data refresh every few seconds
+- **Interactive Filters**: Drill-down capabilities by time, region, event type
+- **Customizable Alerts**: Configure thresholds for automated notifications
+- **Export Capabilities**: Download reports and data for further analysis
 
 ## Cassandra Table Schema
 
@@ -172,8 +261,9 @@ See `cassandra_setup.cql` for full schema. Main fields include:
 
 - **Log Generation**: Edit `Scripts/produser/logs.py` to change event types, user/product pools, or log structure.
 - **Consumer Logic**: Edit `Scripts/Consumer/Consumer.py` to change processing, filtering, or output logic.
-- **Batch DAG**: Edit `dags/batch_hdfs_to_postgres.py` to customize the batch ETL logic.
+- **Batch DAG**: Edit `dags/spark_batch_job_dag.py` to customize the batch ETL logic.
 - **dbt Models**: Edit the `dbt/` project for custom transformations.
+- **Grafana Dashboards**: Import custom dashboards from `Monitoring/` folder or create new ones.
 
 ## Stopping the System
 
@@ -186,12 +276,30 @@ docker-compose down
 - Ensure all containers are healthy (`docker ps`).
 - Check logs for each service (`docker logs <container>`).
 - If Cassandra or PostgreSQL is not ready, wait a minute before running the setup script.
+- For Grafana issues, check the container logs and ensure the data source connections are properly configured.
 
-## Extending with Grafana
+## Performance Optimization
 
-To visualize Cassandra data in Grafana, see the instructions in the previous messages for connecting Grafana to Cassandra. 
+- **Kafka**: Adjust partition count and replication factor based on throughput requirements
+- **Spark**: Configure executor memory and cores based on data volume
+- **Cassandra**: Optimize table design and indexing for your query patterns
+- **PostgreSQL**: Configure connection pooling and query optimization
 
-## Extending with Power BI
+## Security Considerations
 
-- Use Power BI Desktop or Power BI Service to connect to the PostgreSQL database for advanced analytics and dashboarding.
-- Recommended: Use the dbt models as your main reporting tables for clean, analytics-ready data. 
+- Change default passwords in production
+- Use SSL/TLS for database connections
+- Implement proper network segmentation
+- Regular security updates for all components
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
