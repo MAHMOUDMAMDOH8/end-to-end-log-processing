@@ -316,37 +316,7 @@ See `cassandra_setup.cql` for full schema. Main fields include:
 
 ### Cassandra: `logs.ecomm_log`
 
-```mermaid
-erDiagram
-    ECOMM_LOG {
-        text timestamp PK
-        text user_id PK
-        text session_id PK
-        text product_id
-        text event_type
-        text level
-        text service
-        int session_duration
-        text device_type
-        text geo_country
-        text geo_city
-        double details_amount
-        text details_payment_method
-        text details_items
-        text details_order_id
-        text details_query
-        int details_results_count
-        text details_shipping_method
-        text details_delivery_estimate
-        text details_completed_at
-        text details_shipping_address
-        text error_code
-        text message
-        text error_at
-        double attempted_amount
-        text failed_at
-    }
-```
+
 
 ### Analytics (dbt/PostgreSQL): Fact & Dimension Tables
 
