@@ -154,75 +154,80 @@ dbt run
 
 
 ## DWH model 
-```dbml
-Table fact_order {
-  order_id varchar [primary key]
-  user_id varchar [not null, ref: > dim_user.user_id]
-  product_id varchar [not null, ref: > dim_product.product_id]
-  date_sk int [not null, ref: > dim_date.date_sk]
-  amount double
-  quantity int
-  shipping_address varchar
-  shipping_method varchar
-  delivery_estimate varchar
-  completed_at timestamp
-  attempted_amount double
-  failed_at timestamp
-  device_type varchar
-  geo_country varchar
-  geo_city varchar
-}
+```mermaid
+erDiagram
+    FACT_ORDER {
+        varchar order_id PK
+        varchar user_id FK
+        varchar product_id FK
+        int date_sk FK
+        double amount
+        int quantity
+        varchar shipping_address
+        varchar shipping_method
+        varchar delivery_estimate
+        timestamp completed_at
+        double attempted_amount
+        timestamp failed_at
+        varchar device_type
+        varchar geo_country
+        varchar geo_city
+    }
+    FACT_EVENT {
+        varchar event_id PK
+        varchar user_id FK
+        varchar product_id FK
+        int date_sk FK
+        varchar event_type
+        varchar session_id
+        varchar device_type
+        varchar geo_country
+        varchar geo_city
+    }
+    DIM_USER {
+        varchar user_id PK
+        varchar username
+        varchar email
+        varchar full_name
+        varchar first_name
+        varchar last_name
+        varchar sex
+        int age
+        varchar country
+        varchar city
+        date signup_date
+    }
+    DIM_PRODUCT {
+        varchar product_id PK
+        varchar name
+        varchar category
+        varchar subcategory
+        double price
+        varchar brand
+        text description
+        int stock
+        double rating
+        date date_added
+        varchar weight
+    }
+    DIM_DATE {
+        int date_sk PK
+        date full_date
+        int year
+        int month
+        int day
+        varchar day_name
+        int week
+        int quarter
+    }
 
-Table fact_event {
-  event_id varchar [primary key]
-  user_id varchar [not null, ref: > dim_user.user_id]
-  product_id varchar [not null, ref: > dim_product.product_id]
-  date_sk int [not null, ref: > dim_date.date_sk]
-  event_type varchar
-  session_id varchar
-  device_type varchar
-  geo_country varchar
-  geo_city varchar
-}
+    FACT_ORDER }|..|| DIM_USER : "user_id"
+    FACT_ORDER }|..|| DIM_PRODUCT : "product_id"
+    FACT_ORDER }|..|| DIM_DATE : "date_sk"
 
-Table dim_user {
-  user_id varchar [primary key]
-  username varchar
-  email varchar
-  full_name varchar
-  first_name varchar
-  last_name varchar
-  sex varchar
-  age int
-  country varchar
-  city varchar
-  signup_date date
-}
-
-Table dim_product {
-  product_id varchar [primary key]
-  name varchar
-  category varchar
-  subcategory varchar
-  price double
-  brand varchar
-  description text
-  stock int
-  rating double
-  date_added date
-  weight varchar
-}
-
-Table dim_date {
-  date_sk int [primary key]
-  full_date date
-  year int
-  month int
-  day int
-  day_name varchar
-  week int
-  quarter int
-}
+    FACT_EVENT }|..|| DIM_USER : "user_id"
+    FACT_EVENT }|..|| DIM_PRODUCT : "product_id"
+    FACT_EVENT }|..|| DIM_DATE : "date_sk"
 ```
 
 ## Data Flow
