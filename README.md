@@ -165,13 +165,9 @@ erDiagram
         int quantity
         varchar shipping_address
         varchar shipping_method
-        varchar delivery_estimate
         timestamp completed_at
         double attempted_amount
         timestamp failed_at
-        varchar device_type
-        varchar geo_country
-        varchar geo_city
     }
     FACT_EVENT {
         varchar event_id PK
