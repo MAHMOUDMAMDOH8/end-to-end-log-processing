@@ -7,7 +7,6 @@ This project is an end-to-end big data pipeline for processing, storing, and ana
 - **Kafka** for real-time event streaming
 - **Spark Structured Streaming** for real-time data processing
 - **HDFS** for distributed storage
-- **Cassandra** for scalable NoSQL storage and analytics
 - **PostgreSQL** for analytics-ready storage
 - **dbt** for data transformation and modeling
 - **Airflow** for workflow orchestration (including batch jobs)
@@ -21,13 +20,12 @@ This project is an end-to-end big data pipeline for processing, storing, and ana
 graph TD
     A[📊 Log Generator] --> B[🔄 Kafka]
     B --> C[⚡ Spark Structured Streaming]
-    C --> D[📈 Cassandra<br/>Real-time Store]
-    D --> E[📊 Streamlit<br/>Real-time Monitoring]
     C --> F[🗄️ HDFS<br/>Raw Log Storage]
     F --> G[🛠️ Airflow Batch Job]
     G --> H[📊 PostgreSQL<br/>Analytics DB]
     H --> I[🔄 dbt Models]
     I --> J[📈 Power BI<br/>Business Reports]
+    C --> E[📊 Streamlit<br/>Real-time Monitoring]
 ```
 
 ## Real-Time Monitoring Dashboard
@@ -91,7 +89,6 @@ sequenceDiagram
     participant LG as Log Generator
     participant K as Kafka
     participant SS as Spark Streaming
-    participant C as Cassandra
     participant H as HDFS
     participant A as Airflow
     participant P as PostgreSQL
@@ -100,12 +97,11 @@ sequenceDiagram
 
     LG->>K: Send log events
     K->>SS: Stream events
-    SS->>C: Store processed data
     SS->>H: Store raw logs
-    C->>G: Real-time metrics
     H->>A: Trigger batch job
     A->>P: Load analytics data
     P->>PB: Business reports
+    H->>G: Real-time metrics
 ```
 
 ## Directory Structure
@@ -127,8 +123,6 @@ end-to-end-log-processing/
 │   ├── STATISTICS_ANALYTICS.png # Analytics dashboard
 ├── dags/                        # Airflow DAGs
 ├── dbt/                         # dbt project for transformations
-├── cassandra_setup.cql          # Cassandra schema setup
-├── setup_cassandra.sh           # Cassandra initialization script
 ├── docker-compose.yaml          # Multi-service orchestration
 └── dockerfile                   # Custom Docker build for Airflow
 ```
@@ -143,7 +137,7 @@ end-to-end-log-processing/
     - `logs.py`: Log generator logic
     - `users.json`, `products.json`: Sample data
   - **Consumer/**
-    - `Consumer.py`: Spark Structured Streaming consumer (reads from Kafka, writes to HDFS & Cassandra)
+    - `Consumer.py`: Spark Structured Streaming consumer (reads from Kafka, writes to HDFS)
   - **spark_jop/**
     - `batch_jop.py`: Spark batch job (reads from HDFS, writes to PostgreSQL)
 - **dags/**
@@ -163,8 +157,6 @@ end-to-end-log-processing/
 - **Monitoring/**
   - `streamlit_dashboard.py`: Streamlit dashboard for real-time monitoring
   - Dashboard images: EVENTMONITORING.png, STATISTICS_ANALYTICS.png, Real-time Events.png, Geographic Analysis.png, Pipeline Monitoring.png
-- **cassandra_setup.cql**: Cassandra schema setup
-- **setup_cassandra.sh**: Cassandra initialization script
 - **docker-compose.yaml**: Multi-service orchestration
 - **dockerfile**: Custom Docker build for Airflow
 - **logs/**: Airflow and pipeline logs
@@ -209,19 +201,9 @@ cd end-to-end-log-processing
 docker-compose up -d
 ```
 
-This will start all required services: Kafka, Zookeeper, Spark, HDFS (NameNode/DataNode), Cassandra, Airflow, PostgreSQL, Streamlit, and more.
+This will start all required services: Kafka, Zookeeper, Spark, HDFS (NameNode/DataNode), Airflow, PostgreSQL, Streamlit, and more.
 
-### 3. Initialize Cassandra
-
-After the containers are up, set up the Cassandra keyspace and table:
-
-```bash
-bash setup_cassandra.sh
-```
-
-This runs the schema in `cassandra_setup.cql` and verifies the setup.
-
-### 4. Produce Log Events
+### 3. Produce Log Events
 
 In a new terminal, run the producer to generate and send events to Kafka:
 
@@ -231,7 +213,7 @@ cd /opt/spark/scripts/produser
 python3 Producer.py
 ```
 
-### 5. Start the Consumer
+### 4. Start the Consumer
 
 In another terminal, run the Spark consumer to process and store the events:
 
@@ -241,13 +223,13 @@ cd /opt/spark/scripts/Consumer
 python3 Consumer.py
 ```
 
-### 6. Monitor Real-Time Data
+### 5. Monitor Real-Time Data
 
 Access the Streamlit dashboard for real-time, interactive, log-focused monitoring:
 
 **Streamlit UI**: [http://localhost:8501](http://localhost:8501)
 
-### 7. Batch Processing: HDFS to PostgreSQL (Every 10 Minutes)
+### 6. Batch Processing: HDFS to PostgreSQL (Every 10 Minutes)
 
 Airflow is configured to run a DAG every 10 minutes that:
 - Reads new data from HDFS
@@ -259,7 +241,7 @@ You can find and customize the DAG in `dags/spark_batch_job_dag.py`.
 - Username: `airflow`
 - Password: `airflow`
 
-### 8. Data Transformation with dbt
+### 7. Data Transformation with dbt
 
 After data lands in PostgreSQL, dbt is used for data modeling and transformation. The dbt project is located in the `dbt/` directory.
 
@@ -273,12 +255,12 @@ cd /opt/airflow/dbt
 dbt run
 ```
 
-### 9. Analytics with Power BI
+### 8. Analytics with Power BI
 
 - Connect Power BI Desktop to the PostgreSQL database (host: `localhost`, port: `5432`, user: `airflow`, password: `airflow`, db: `airflow`).
 - Build dashboards and reports on top of the dbt models.
 
-### 10. Accessing the Services
+### 9. Accessing the Services
 
 | Service | URL | Credentials |
 |---------|-----|-------------|
@@ -286,19 +268,17 @@ dbt run
 | **HDFS NameNode UI** | [http://localhost:9870](http://localhost:9870) | - |
 | **Streamlit** | [http://localhost:8501](http://localhost:8501) | - |
 | **Airflow UI** | [http://localhost:8082](http://localhost:8082) | airflow/airflow |
-| **Cassandra** | Port 9042 | - |
 | **PostgreSQL** | Port 5432 | airflow/airflow |
 | **Kafka** | Port 9092 (internal), 29092 (external) | - |
 
 ## Data Flow
 
 1. **📊 Producer** generates logs and sends them to Kafka topic `LogEvents`.
-2. **⚡ Consumer** reads from Kafka, parses and flattens the data, writes raw logs to HDFS and processed logs to Cassandra.
+2. **⚡ Consumer** reads from Kafka, parses and flattens the data, writes raw logs to HDFS.
 3. **📈 Streamlit** provides real-time monitoring and visualization of the streaming data.
 4. **🛠️ Airflow** runs a batch job every 10 minutes to move new data from HDFS to PostgreSQL.
 5. **🔄 dbt** transforms and models the data in PostgreSQL.
 6. **📊 Power BI** connects to PostgreSQL for analytics and visualization.
-7. **📈 Cassandra** table `logs.ecomm_log` is indexed for fast queries on event type, user, product, etc.
 
 ## Monitoring & Analytics Features
 
@@ -320,18 +300,7 @@ dbt run
 - **Customizable Alerts**: Configure thresholds for automated notifications
 - **Export Capabilities**: Download reports and data for further analysis
 
-## Cassandra Table Schema
-
-See `cassandra_setup.cql` for full schema. Main fields include:
-
-- `timestamp`, `user_id`, `session_id`, `product_id`, `event_type`, `level`, `service`, etc.
-- Flattened details for amounts, payment, shipping, errors, etc.
-
 ## Database Schemas (Mermaid)
-
-### Cassandra: `logs.ecomm_log`
-
-
 
 ### Analytics (dbt/PostgreSQL): Fact & Dimension Tables
 
@@ -417,13 +386,12 @@ docker-compose down
 
 - Ensure all containers are healthy (`docker ps`).
 - Check logs for each service (`docker logs <container>`).
-- If Cassandra or PostgreSQL is not ready, wait a minute before running the setup script.
+- If PostgreSQL is not ready, wait a minute before running the setup script.
 
 ## Performance Optimization
 
 - **Kafka**: Adjust partition count and replication factor based on throughput requirements
 - **Spark**: Configure executor memory and cores based on data volume
-- **Cassandra**: Optimize table design and indexing for your query patterns
 - **PostgreSQL**: Configure connection pooling and query optimization
 
 ## Security Considerations
