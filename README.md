@@ -195,7 +195,6 @@ erDiagram
         int age
         varchar country
         varchar city
-        date signup_date
     }
     DIM_PRODUCT {
         varchar product_id PK
@@ -207,8 +206,6 @@ erDiagram
         text description
         int stock
         double rating
-        date date_added
-        varchar weight
     }
     DIM_DATE {
         int date_sk PK
