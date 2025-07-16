@@ -18,14 +18,14 @@ This project is an end-to-end big data pipeline for processing, storing, and ana
 
 ```mermaid
 graph TD
-    A[📊 Log Generator] --> B[🔄 Kafka]
-    B --> C[⚡ Spark Structured Streaming]
-    C --> F[🗄️ HDFS<br/>Raw Log Storage]
-    F --> G[🛠️ Airflow Batch Job]
-    G --> H[📊 PostgreSQL<br/>Analytics DB]
-    H --> I[🔄 dbt Models]
-    I --> J[📈 Power BI<br/>Business Reports]
-    C --> E[📊 Streamlit<br/>Real-time Monitoring]
+    A[Log Generator] --> B[ Kafka]
+    B --> C[ Spark Structured Streaming]
+    C --> F[ HDFS<br/>Raw Log Storage]
+    F --> G[ Airflow Batch Job]
+    G --> H[ PostgreSQL<br/>Analytics DB]
+    H --> I[ dbt Models]
+    I --> J[Power BI<br/>Business Reports]
+    C --> E[ Streamlit<br/>Real-time Monitoring]
 ```
 
 ## Real-Time Monitoring Dashboard
