@@ -60,37 +60,7 @@ par_df = df.select(
     from_json(col("value").cast("string"), schema).alias("data")
 ).select("data.*")
 
-# Flatten the DataFrame for Cassandra (Cassandra doesn't support nested objects)
-print(par_df.printSchema())
-flat_df = par_df.select(
-    par_df["timestamp"],
-    par_df["level"],
-    par_df["service"],
-    par_df["event_type"],
-    par_df["user_id"],
-    par_df["session_id"],
-    par_df["product_id"],
-    par_df["session_duration"],
-    par_df["device_type"],
-    par_df["geo_location.country"].alias("geo_country"),
-    par_df["geo_location.city"].alias("geo_city"),
-    par_df["details.amount"].alias("details_amount"),
-    par_df["details.payment_method"].alias("details_payment_method"),
-    par_df["details.items"].alias("details_items"),
-    par_df["details.order_id"].alias("details_order_id"),
-    par_df["details.query"].alias("details_query"),
-    par_df["details.results_count"].alias("details_results_count"),
-    par_df["details.shipping_method"].alias("details_shipping_method"),
-    par_df["details.delivery_estimate"].alias("details_delivery_estimate"),
-    par_df["details.completed_at"].alias("details_completed_at"),
-    par_df["details.shipping_address"].alias("details_shipping_address"),
-    par_df["details.attempted_amount"].alias("attempted_amount"),
-    par_df["details.failed_at"].alias("failed_at"),
-    par_df["error_code"],
-    par_df["message"],
-    par_df["error_at"]
-    
-)
+
 
 print("Starting streaming queries...")
 
@@ -103,18 +73,8 @@ query_hdfs = par_df.writeStream \
     .trigger(processingTime="10 seconds") \
     .start()
 
-# Write to Cassandra
-query_cassandra = flat_df.writeStream \
-    .format("org.apache.spark.sql.cassandra") \
-    .option("keyspace", "logs") \
-    .option("table", "ecomm_log") \
-    .option("checkpointLocation", "hdfs://namenode:8020/event_data/cassandra_checkpoint") \
-    .outputMode("append") \
-    .trigger(processingTime="10 seconds") \
-    .start()
 
 print("Both HDFS and Cassandra streaming queries started!")
 
 # Wait for termination
 query_hdfs.awaitTermination()
-query_cassandra.awaitTermination()
