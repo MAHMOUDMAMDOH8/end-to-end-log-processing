@@ -312,6 +312,109 @@ See `cassandra_setup.cql` for full schema. Main fields include:
 - `timestamp`, `user_id`, `session_id`, `product_id`, `event_type`, `level`, `service`, etc.
 - Flattened details for amounts, payment, shipping, errors, etc.
 
+## Database Schemas (Mermaid)
+
+### Cassandra: `logs.ecomm_log`
+
+```mermaid
+erDiagram
+    ECOMM_LOG {
+        text timestamp PK
+        text user_id PK
+        text session_id PK
+        text product_id
+        text event_type
+        text level
+        text service
+        int session_duration
+        text device_type
+        text geo_country
+        text geo_city
+        double details_amount
+        text details_payment_method
+        text details_items
+        text details_order_id
+        text details_query
+        int details_results_count
+        text details_shipping_method
+        text details_delivery_estimate
+        text details_completed_at
+        text details_shipping_address
+        text error_code
+        text message
+        text error_at
+        double attempted_amount
+        text failed_at
+    }
+```
+
+### Analytics (dbt/PostgreSQL): Fact & Dimension Tables
+
+```mermaid
+erDiagram
+    FACT_ORDER {
+        text order_sk PK
+        text user_sk FK
+        text product_sk FK
+        text date_sk FK
+        int quantity
+        numeric amount
+        text payment_method
+        text status
+    }
+    FACT_EVENT {
+        text event_sk PK
+        text user_sk FK
+        text product_sk FK
+        text date_sk FK
+        text event_type
+        text session_id
+        text device_type
+        text geo_country
+        text geo_city
+    }
+    DIM_USERS {
+        text user_sk PK
+        text user_id
+        text username
+        text email
+        text sex
+        numeric age
+        text country
+        text city
+        text source
+    }
+    DIM_PRODUCT {
+        text product_sk PK
+        text product_id
+        text product_name
+        text category
+        text subcategory
+        text brand
+        text description
+        numeric price
+        numeric stock
+        numeric rating
+        text source
+    }
+    DIM_DATE {
+        text date_sk PK
+        timestamp timestamp
+        int year
+        int month
+        int day
+        int week
+        int quarter
+    }
+    
+    FACT_ORDER ||--o{ DIM_USERS : "user_sk"
+    FACT_ORDER ||--o{ DIM_PRODUCT : "product_sk"
+    FACT_ORDER ||--o{ DIM_DATE : "date_sk"
+    FACT_EVENT ||--o{ DIM_USERS : "user_sk"
+    FACT_EVENT ||--o{ DIM_PRODUCT : "product_sk"
+    FACT_EVENT ||--o{ DIM_DATE : "date_sk"
+```
+
 ## Customization
 
 - **Log Generation**: Edit `Scripts/produser/logs.py` to change event types, user/product pools, or log structure.
