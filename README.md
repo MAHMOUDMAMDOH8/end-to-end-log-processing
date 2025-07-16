@@ -152,6 +152,79 @@ dbt run
 - **Kafka**: Port 9092 (internal), 29092 (external)
 - **Airflow UI**: [http://localhost:8082](http://localhost:8082)
 
+
+## DWH model 
+```dbml
+Table fact_order {
+  order_id varchar [primary key]
+  user_id varchar [not null, ref: > dim_user.user_id]
+  product_id varchar [not null, ref: > dim_product.product_id]
+  date_sk int [not null, ref: > dim_date.date_sk]
+  amount double
+  quantity int
+  shipping_address varchar
+  shipping_method varchar
+  delivery_estimate varchar
+  completed_at timestamp
+  attempted_amount double
+  failed_at timestamp
+  device_type varchar
+  geo_country varchar
+  geo_city varchar
+}
+
+Table fact_event {
+  event_id varchar [primary key]
+  user_id varchar [not null, ref: > dim_user.user_id]
+  product_id varchar [not null, ref: > dim_product.product_id]
+  date_sk int [not null, ref: > dim_date.date_sk]
+  event_type varchar
+  session_id varchar
+  device_type varchar
+  geo_country varchar
+  geo_city varchar
+}
+
+Table dim_user {
+  user_id varchar [primary key]
+  username varchar
+  email varchar
+  full_name varchar
+  first_name varchar
+  last_name varchar
+  sex varchar
+  age int
+  country varchar
+  city varchar
+  signup_date date
+}
+
+Table dim_product {
+  product_id varchar [primary key]
+  name varchar
+  category varchar
+  subcategory varchar
+  price double
+  brand varchar
+  description text
+  stock int
+  rating double
+  date_added date
+  weight varchar
+}
+
+Table dim_date {
+  date_sk int [primary key]
+  full_date date
+  year int
+  month int
+  day int
+  day_name varchar
+  week int
+  quarter int
+}
+```
+
 ## Data Flow
 
 1. **Producer** generates logs and sends them to Kafka topic `LogEvents`.
