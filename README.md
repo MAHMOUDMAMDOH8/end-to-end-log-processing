@@ -43,11 +43,16 @@ graph TD
 
 ## Real-Time Monitoring Dashboard
 
-Our system includes comprehensive real-time monitoring capabilities through Grafana:
+Our system includes comprehensive real-time monitoring capabilities through Streamlit:
 
-![Event Monitoring Dashboard](Monitoring/EVENTMONITORING.png)
+![Real-time Events Dashboard](Monitoring/Real-time%20Events.png)
+*Real-time events dashboard showing live event ingestion, filtering, and inspection*
 
-*Real-time event monitoring dashboard showing live metrics, event counts, and system performance*
+![Geographic Analysis Dashboard](Monitoring/Geographic%20Analysis.png)
+*Geographic analysis dashboard visualizing user activity by location*
+
+![Pipeline Monitoring Dashboard](Monitoring/Pipeline%20Monitoring.png)
+*Pipeline monitoring dashboard displaying system health, event flow, and error rates*
 
 ## Pipeline Monitoring with Streamlit
 
