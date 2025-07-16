@@ -12,7 +12,7 @@ This project is an end-to-end big data pipeline for processing, storing, and ana
 - **dbt** for data transformation and modeling
 - **Airflow** for workflow orchestration (including batch jobs)
 - **Docker Compose** for easy multi-service orchestration
-- **Grafana** for real-time monitoring and visualization
+- **Streamlit** for real-time monitoring and visualization
 - **Power BI** for business intelligence and visualization
 
 ## Architecture Diagram
@@ -22,7 +22,7 @@ graph TD
     A[📊 Log Generator] --> B[🔄 Kafka]
     B --> C[⚡ Spark Structured Streaming]
     C --> D[📈 Cassandra<br/>Real-time Store]
-    D --> E[📊 Grafana , streamlit <br/>Real-time Monitoring]
+    D --> E[📊 Streamlit<br/>Real-time Monitoring]
     C --> F[🗄️ HDFS<br/>Raw Log Storage]
     F --> G[🛠️ Airflow Batch Job]
     G --> H[📊 PostgreSQL<br/>Analytics DB]
@@ -59,7 +59,7 @@ streamlit run streamlit_dashboard.py
 ```
 
 - The dashboard will be available at [http://localhost:8501](http://localhost:8501) by default.
-- Use this dashboard as an alternative or complement to Grafana for operational monitoring and log inspection.
+- Use this dashboard for operational monitoring and log inspection.
 
 ## Analytics & Statistics Dashboard
 
@@ -80,7 +80,7 @@ sequenceDiagram
     participant H as HDFS
     participant A as Airflow
     participant P as PostgreSQL
-    participant G as Grafana , streamlit
+    participant G as Streamlit
     participant PB as Power BI
 
     LG->>K: Send log events
@@ -110,9 +110,6 @@ end-to-end-log-processing/
 ├── Monitoring/
 │   ├── EVENTMONITORING.png      # Event monitoring dashboard
 │   ├── STATISTICS_ANALYTICS.png # Analytics dashboard
-│   ├── grafana_monitoring_dashboard.json
-│   ├── world_map_dashboard.json
-│   └── grafana_dashboard_queries.cql
 ├── dags/                        # Airflow DAGs
 ├── dbt/                         # dbt project for transformations
 ├── cassandra_setup.cql          # Cassandra schema setup
@@ -126,14 +123,13 @@ end-to-end-log-processing/
 - Docker & Docker Compose
 - Python 3.8+ (for running scripts outside containers, if needed)
 - Power BI Desktop (for analytics)
-- Grafana (included in Docker setup)
 
 ## Quick Start
 
 ### 1. Clone the Repository
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/MAHMOUDMAMDOH8/end-to-end-log-processing
 cd end-to-end-log-processing
 ```
 
@@ -143,7 +139,7 @@ cd end-to-end-log-processing
 docker-compose up -d
 ```
 
-This will start all required services: Kafka, Zookeeper, Spark, HDFS (NameNode/DataNode), Cassandra, Airflow, PostgreSQL, Grafana, and more.
+This will start all required services: Kafka, Zookeeper, Spark, HDFS (NameNode/DataNode), Cassandra, Airflow, PostgreSQL, Streamlit, and more.
 
 ### 3. Initialize Cassandra
 
@@ -177,21 +173,9 @@ python3 Consumer.py
 
 ### 6. Monitor Real-Time Data
 
-Access the Grafana monitoring dashboards:
+Access the Streamlit dashboard for real-time, interactive, log-focused monitoring:
 
-- **Grafana UI**: [http://localhost:3000](http://localhost:3000)
-  - Username: `admin`
-  - Password: `admin`
-
-The dashboards include:
-- Real-time event monitoring
-- Statistical analytics
-- Geographic data visualization
-- Performance metrics
-
-Or use the **Streamlit dashboard** for a more interactive, log-focused monitoring experience:
-
-- **Streamlit UI**: [http://localhost:8501](http://localhost:8501)
+**Streamlit UI**: [http://localhost:8501](http://localhost:8501)
 
 ### 7. Batch Processing: HDFS to PostgreSQL (Every 10 Minutes)
 
@@ -230,7 +214,6 @@ dbt run
 |---------|-----|-------------|
 | **Spark UI** | [http://localhost:8080](http://localhost:8080) | - |
 | **HDFS NameNode UI** | [http://localhost:9870](http://localhost:9870) | - |
-| **Grafana** | [http://localhost:3000](http://localhost:3000) | admin/admin |
 | **Streamlit** | [http://localhost:8501](http://localhost:8501) | - |
 | **Airflow UI** | [http://localhost:8082](http://localhost:8082) | airflow/airflow |
 | **Cassandra** | Port 9042 | - |
@@ -241,7 +224,7 @@ dbt run
 
 1. **📊 Producer** generates logs and sends them to Kafka topic `LogEvents`.
 2. **⚡ Consumer** reads from Kafka, parses and flattens the data, writes raw logs to HDFS and processed logs to Cassandra.
-3. **📈 Grafana** provides real-time monitoring and visualization of the streaming data.
+3. **📈 Streamlit** provides real-time monitoring and visualization of the streaming data.
 4. **🛠️ Airflow** runs a batch job every 10 minutes to move new data from HDFS to PostgreSQL.
 5. **🔄 dbt** transforms and models the data in PostgreSQL.
 6. **📊 Power BI** connects to PostgreSQL for analytics and visualization.
@@ -280,7 +263,6 @@ See `cassandra_setup.cql` for full schema. Main fields include:
 - **Consumer Logic**: Edit `Scripts/Consumer/Consumer.py` to change processing, filtering, or output logic.
 - **Batch DAG**: Edit `dags/spark_batch_job_dag.py` to customize the batch ETL logic.
 - **dbt Models**: Edit the `dbt/` project for custom transformations.
-- **Grafana Dashboards**: Import custom dashboards from `Monitoring/` folder or create new ones.
 
 ## Stopping the System
 
@@ -293,7 +275,6 @@ docker-compose down
 - Ensure all containers are healthy (`docker ps`).
 - Check logs for each service (`docker logs <container>`).
 - If Cassandra or PostgreSQL is not ready, wait a minute before running the setup script.
-- For Grafana issues, check the container logs and ensure the data source connections are properly configured.
 
 ## Performance Optimization
 
