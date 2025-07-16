@@ -43,6 +43,21 @@ Our system includes comprehensive real-time monitoring capabilities through Stre
 ![Pipeline Monitoring Dashboard](Monitoring/Pipeline%20Monitoring.png)
 *Pipeline monitoring dashboard displaying system health, event flow, and error rates*
 
+## Pipeline Work Completed
+![pipeline](Monitoring/pipeline.png)
+The Airflow DAG (`dags/spark_batch_job_dag.py`) orchestrating the batch processing pipeline from HDFS to PostgreSQL and dbt transformations has been enhanced with the following updates:
+- **Task Organization**: Structured tasks into logical groups for clarity:
+  - `check_services_group`: Verifies PostgreSQL and Spark availability (`check_services_health`).
+  - `validate_and_processing_group`: Validates PostgreSQL data (`validate_postgres_data`) and runs Spark batch job (`spark_batch_task`).
+  - `dbt_group`: Executes dbt snapshots (`dbt_snapshot_task`) and transformations (`dbt_run_task`).
+  - Workflow: `check_services_group >> validate_and_processing_group >> dbt_group`.
+- **Restored Workflow**: Reinstated the original sequence `spark_batch_task >> dbt_snapshot_task >> dbt_run_task` to align with pipeline requirements, processing HDFS data to PostgreSQL and applying dbt models.
+- **Monitoring Enhancements**:
+  - Added Slack notifications for DAG success/failure and individual task failures using `SlackWebhookOperator`.
+  - Implemented email notifications for service downtime via `EmailOperator` (triggered on `check_services_health` failure).
+- **Error Handling**: Configured retries (3 for `spark_batch_task`, 2 for others) with delays to ensure robustness.
+- **Accomplishments**: Improved pipeline reliability, visibility, and maintainability, ensuring seamless data flow from HDFS to PostgreSQL with real-time monitoring and error alerts.
+
 ## Pipeline Monitoring with Streamlit
 
 You can also monitor your pipeline using the interactive Streamlit dashboard, which provides:
