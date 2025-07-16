@@ -49,6 +49,24 @@ Our system includes comprehensive real-time monitoring capabilities through Graf
 
 *Real-time event monitoring dashboard showing live metrics, event counts, and system performance*
 
+## Pipeline Monitoring with Streamlit
+
+You can also monitor your pipeline using the interactive Streamlit dashboard, which provides:
+- Real-time event ingestion and error rates
+- Detailed log inspection and filtering
+- Event type breakdowns and timelines
+- Geographic and real-time event analysis
+
+### To run the Streamlit dashboard:
+
+```bash
+pip install streamlit plotly pandas numpy
+streamlit run streamlit_dashboard.py
+```
+
+- The dashboard will be available at [http://localhost:8501](http://localhost:8501) by default.
+- Use this dashboard as an alternative or complement to Grafana for operational monitoring and log inspection.
+
 ## Analytics & Statistics Dashboard
 
 Advanced analytics and statistical insights are available through our dedicated analytics dashboard:
@@ -177,6 +195,10 @@ The dashboards include:
 - Geographic data visualization
 - Performance metrics
 
+Or use the **Streamlit dashboard** for a more interactive, log-focused monitoring experience:
+
+- **Streamlit UI**: [http://localhost:8501](http://localhost:8501)
+
 ### 7. Batch Processing: HDFS to PostgreSQL (Every 10 Minutes)
 
 Airflow is configured to run a DAG every 10 minutes that:
@@ -215,6 +237,7 @@ dbt run
 | **Spark UI** | [http://localhost:8080](http://localhost:8080) | - |
 | **HDFS NameNode UI** | [http://localhost:9870](http://localhost:9870) | - |
 | **Grafana** | [http://localhost:3000](http://localhost:3000) | admin/admin |
+| **Streamlit** | [http://localhost:8501](http://localhost:8501) | - |
 | **Airflow UI** | [http://localhost:8082](http://localhost:8082) | airflow/airflow |
 | **Cassandra** | Port 9042 | - |
 | **PostgreSQL** | Port 5432 | airflow/airflow |

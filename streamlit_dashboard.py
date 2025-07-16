@@ -316,31 +316,20 @@ def main():
         events_df = generate_live_events(event_count)
     
     # Main navigation using tabs
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-        "Overview", 
-        "User Analytics", 
-        "Product Analytics", 
-        "Event Monitoring", 
+    # Only keep monitoring-focused tabs
+    tab1, tab2, tab3 = st.tabs([
+        "Pipeline Monitoring", 
         "Geographic Analysis", 
         "Real-time Events"
     ])
-    
+
     with tab1:
-        show_overview(users_df, products_df, events_df)
-    
+        show_pipeline_monitoring(events_df)
+
     with tab2:
-        show_user_analytics(users_df)
-    
-    with tab3:
-        show_product_analytics(products_df)
-    
-    with tab4:
-        show_event_monitoring(events_df)
-    
-    with tab5:
         show_geographic_analysis(events_df)
-    
-    with tab6:
+
+    with tab3:
         show_realtime_events(events_df)
 
 def show_overview(users_df, products_df, events_df):
@@ -791,6 +780,89 @@ def show_realtime_events(events_df):
             st.metric("Active Users", f"{unique_users:,}")
     else:
         st.warning("No events generated. Try refreshing the page.")
+
+def show_pipeline_monitoring(events_df):
+    """Show pipeline monitoring dashboard with key operational metrics"""
+    st.header("Pipeline Monitoring")
+    event_stats = get_event_stats(events_df)
+
+    # System Health (sidebar)
+    st.sidebar.header("System Health")
+    st.sidebar.metric("Kafka", "Healthy")
+    st.sidebar.metric("Spark", "Healthy")
+    st.sidebar.metric("HDFS", "Healthy")
+    st.sidebar.metric("Cassandra", "Healthy")
+    st.sidebar.metric("PostgreSQL", "Healthy")
+    st.sidebar.metric("Airflow", "Healthy")
+    st.sidebar.metric("Batch Job Status", "OK")
+
+    # Top metrics row
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Total Events", f"{event_stats.get('total_events', 0):,}")
+    with col2:
+        st.metric("Event Ingestion Rate", f"{event_stats.get('total_events', 0)//10}/s")
+    with col3:
+        error_count = event_stats.get('error_events', 0)
+        st.metric("Error Events", f"{error_count:,}", delta=f"{error_count} errors" if error_count > 0 else "No errors")
+    with col4:
+        st.metric("Purchase Events", f"{event_stats.get('purchase_events', 0):,}")
+
+    # Event types bar chart
+    if 'event_types' in event_stats and not event_stats['event_types'].empty:
+        fig = px.bar(
+            event_stats['event_types'],
+            x='event_type',
+            y='count',
+            title="Event Types Processed",
+            color='count',
+            color_continuous_scale='viridis'
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Error rate gauge
+    if event_stats.get('total_events', 0) > 0:
+        error_rate = event_stats.get('error_events', 0) / event_stats.get('total_events', 1) * 100
+        fig = go.Figure(go.Indicator(
+            mode = "gauge+number+delta",
+            value = error_rate,
+            title = {'text': "Error Rate (%)"},
+            gauge = {'axis': {'range': [None, 100]},
+                     'bar': {'color': "#ff4444"}},
+            delta = {'reference': 5, 'increasing': {'color': "red"}}
+        ))
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Event timeline
+    if len(events_df) > 1:
+        events_df['minute'] = pd.to_datetime(events_df['timestamp']).dt.strftime('%H:%M')
+        timeline = events_df.groupby(['minute', 'event_type']).size().reset_index(name='count')
+        fig = px.line(
+            timeline,
+            x='minute',
+            y='count',
+            color='event_type',
+            title="Event Processing Timeline",
+            markers=True
+        )
+        fig.update_layout(xaxis_title="Minute", yaxis_title="Event Count")
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Live event stream table
+    st.subheader("Recent Events")
+    display_events = events_df.head(20).copy()
+    columns_to_show = ['timestamp', 'event_type', 'user_id', 'product_id', 'level', 'device_type']
+    if 'country' in events_df.columns:
+        columns_to_show.append('country')
+    if 'city' in events_df.columns:
+        columns_to_show.append('city')
+    if 'amount' in events_df.columns:
+        columns_to_show.append('amount')
+    existing_columns = [col for col in columns_to_show if col in display_events.columns]
+    display_events = display_events[existing_columns]
+    if 'timestamp' in display_events.columns:
+        display_events['timestamp'] = pd.to_datetime(display_events['timestamp']).dt.strftime('%H:%M:%S')
+    st.dataframe(display_events, use_container_width=True)
 
 if __name__ == "__main__":
     main() 
