@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: ecommerce_oltp
+    database: postgres
+    schema: public
+    tables:
+      - name: error_response
+      - name: order_complete_response
+      - name: order_failed_response
+      - name: products
+      - name: users
+      - name: purchase_response
+      - name: search_response
+      
+

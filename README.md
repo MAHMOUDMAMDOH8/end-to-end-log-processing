@@ -118,6 +118,61 @@ end-to-end-log-processing/
 └── dockerfile                   # Custom Docker build for Airflow
 ```
 
+## Codebase Index
+
+### Top-Level Structure
+
+- **Scripts/**
+  - **produser/**
+    - `Producer.py`: Kafka producer for log events
+    - `logs.py`: Log generator logic
+    - `users.json`, `products.json`: Sample data
+  - **Consumer/**
+    - `Consumer.py`: Spark Structured Streaming consumer (reads from Kafka, writes to HDFS & Cassandra)
+  - **spark_jop/**
+    - `batch_jop.py`: Spark batch job (reads from HDFS, writes to PostgreSQL)
+- **dags/**
+  - `batch_job_dag.py`: Airflow DAG for orchestrating batch Spark job and dbt runs
+- **dbt/**
+  - **Ecommerce_model/**: Main dbt project
+    - `dbt_project.yml`: dbt project config
+    - `models/`: dbt models
+      - `staging/`: Staging models (STG_user.sql, STG_Event.sql, STG_orders.sql, STG_Products.sql)
+      - `olap_model/`: OLAP models
+        - `fact/`: Fact tables (Fact_order.sql, Fact_Event.sql)
+        - `dimensions/`: Dimension tables (Dim_users.sql, Dim_product.sql, Dim_date.sql)
+      - `source.yml`: Source table definitions
+    - `snapshots/`: Snapshots (CDC_product.sql)
+    - `seeds/`, `tests/`, `analyses/`, `macros/`, `dbt_packages/`, `logs/`: dbt project structure
+    - `README.md`: dbt project readme
+- **Monitoring/**
+  - `streamlit_dashboard.py`: Streamlit dashboard for real-time monitoring
+  - Dashboard images: EVENTMONITORING.png, STATISTICS_ANALYTICS.png, Real-time Events.png, Geographic Analysis.png, Pipeline Monitoring.png
+- **cassandra_setup.cql**: Cassandra schema setup
+- **setup_cassandra.sh**: Cassandra initialization script
+- **docker-compose.yaml**: Multi-service orchestration
+- **dockerfile**: Custom Docker build for Airflow
+- **logs/**: Airflow and pipeline logs
+- **hadoop/**: Hadoop binaries (if any)
+- **plugins/**, **includes/**: Airflow plugins and includes
+
+---
+
+## dbt Lineage & Data Model
+
+The dbt project models the analytics layer in PostgreSQL, transforming raw event data into business-ready fact and dimension tables. The lineage below shows the flow from raw sources to final models:
+
+![dbt Lineage](image/dbt.png)
+*dbt lineage graph: sources → staging → facts/dimensions → analytics*
+
+- **Sources**: Raw tables loaded from Spark batch job (e.g., `order_complete_response`, `search_response`, etc.)
+- **Staging Models**: Clean and standardize raw data (`STG_user`, `STG_Event`, `STG_orders`, `STG_Products`)
+- **Snapshots**: Track slowly changing dimensions (e.g., `CDC_product`)
+- **Fact Tables**: Event and order facts (`Fact_Event`, `Fact_order`)
+- **Dimension Tables**: User, product, and date dimensions (`Dim_users`, `Dim_product`, `Dim_date`)
+
+See `dbt/Ecommerce_model/models/` for full SQL logic and model details.
+
 ## Prerequisites
 
 - Docker & Docker Compose

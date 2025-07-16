@@ -143,11 +143,11 @@ order_failed_df = df[df["event_type"] == "order_failed"].select(
 #     "password": os.environ.get("PG_PASSWORD")
 # }
 db_params = {
-    "host": "aws-0-eu-west-3.pooler.supabase.com",
+    "host": "aws-0-us-west-1.pooler.supabase.com",
     "port": 6543,
     "database": "postgres",
-    "user": "postgres.vrxamhmisrlwxnykimqx",
-    "password": "logs123+"
+    "user": "postgres.tvindbteitvoqwwdmheh",
+    "password": "logs1234+"
 }
 
 search_df.write.format("jdbc")\
@@ -156,6 +156,7 @@ search_df.write.format("jdbc")\
     .option("user", db_params["user"])\
     .option("password", db_params["password"])\
     .option("driver", "org.postgresql.Driver")\
+    .option("numPartitions", 1)\
     .mode("append")\
     .save()
 
@@ -165,6 +166,7 @@ error_df.write.format("jdbc")\
     .option("user", db_params["user"])\
     .option("password", db_params["password"])\
     .option("driver", "org.postgresql.Driver")\
+    .option("numPartitions", 1)\
     .mode("append")\
     .save()
 
@@ -174,6 +176,7 @@ order_complete_df.write.format("jdbc")\
     .option("user", db_params["user"])\
     .option("password", db_params["password"])\
     .option("driver", "org.postgresql.Driver")\
+    .option("numPartitions", 1)\
     .mode("append")\
     .save()
 
@@ -183,6 +186,7 @@ purchase_df.write.format("jdbc")\
     .option("user", db_params["user"])\
     .option("password", db_params["password"])\
     .option("driver", "org.postgresql.Driver")\
+    .option("numPartitions", 1)\
     .mode("append")\
     .save()
 
@@ -192,15 +196,16 @@ order_failed_df.write.format("jdbc")\
     .option("user", db_params["user"])\
     .option("password", db_params["password"])\
     .option("driver", "org.postgresql.Driver")\
+    .option("numPartitions", 1)\
     .mode("append")\
     .save()
 
 print("Data written to postgres successfully")
 
 # Archiving step (manual or via Hadoop API)
-print("\nTo archive processed files, run this from the namenode container:")
 
-os.system("hdfs dfs -mv /event_data/*.json /archive/")
+
+
 
 spark.stop()
 
