@@ -22,23 +22,12 @@ graph TD
     A[📊 Log Generator] --> B[🔄 Kafka]
     B --> C[⚡ Spark Structured Streaming]
     C --> D[📈 Cassandra<br/>Real-time Store]
-    D --> E[📊 Grafana<br/>Real-time Monitoring]
+    D --> E[📊 Grafana , streamlit <br/>Real-time Monitoring]
     C --> F[🗄️ HDFS<br/>Raw Log Storage]
     F --> G[🛠️ Airflow Batch Job]
     G --> H[📊 PostgreSQL<br/>Analytics DB]
     H --> I[🔄 dbt Models]
     I --> J[📈 Power BI<br/>Business Reports]
-    
-    style A fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    style B fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    style C fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-    style D fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    style E fill:#fce4ec,stroke:#880e4f,stroke-width:2px
-    style F fill:#f1f8e9,stroke:#33691e,stroke-width:2px
-    style G fill:#e0f2f1,stroke:#004d40,stroke-width:2px
-    style H fill:#e3f2fd,stroke:#0d47a1,stroke-width:2px
-    style I fill:#fafafa,stroke:#424242,stroke-width:2px
-    style J fill:#fff8e1,stroke:#f57f17,stroke-width:2px
 ```
 
 ## Real-Time Monitoring Dashboard
@@ -91,7 +80,7 @@ sequenceDiagram
     participant H as HDFS
     participant A as Airflow
     participant P as PostgreSQL
-    participant G as Grafana
+    participant G as Grafana , streamlit
     participant PB as Power BI
 
     LG->>K: Send log events
