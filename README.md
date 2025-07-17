@@ -1,4 +1,5 @@
 # End-to-End Log Processing System
+<img width="1280" height="393" alt="image" src="https://github.com/user-attachments/assets/cdf3081d-b05f-4d14-a4a3-d7e6de173bc9" />
 
 ## Overview
 
