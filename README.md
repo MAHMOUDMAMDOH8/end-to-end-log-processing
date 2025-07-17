@@ -95,7 +95,6 @@ streamlit run streamlit_dashboard.py
 *Comprehensive analytics dashboard displaying key business metrics, user behavior patterns, and performance statistics*
 
 
-
 ## Codebase Index
 
 ### Top-Level Structure
@@ -150,39 +149,9 @@ The dbt project models the analytics layer in PostgreSQL, transforming raw event
 See `dbt/Ecommerce_model/models/` for full SQL logic and model details.
 
 
-### 5. Monitor Real-Time Data
 
-Access the Streamlit dashboard for real-time, interactive, log-focused monitoring:
 
-**Streamlit UI**: [http://localhost:8501](http://localhost:8501)
-
-### 6. Batch Processing: HDFS to PostgreSQL (Every 10 Minutes)
-
-Airflow is configured to run a DAG every 10 minutes that:
-- Reads new data from HDFS
-- Loads it into PostgreSQL for analytics
-
-You can find and customize the DAG in `dags/spark_batch_job_dag.py`.
-
-**Airflow UI**: [http://localhost:8082](http://localhost:8082)
-- Username: `airflow`
-- Password: `airflow`
-
-### 7. Data Transformation with dbt
-
-After data lands in PostgreSQL, dbt is used for data modeling and transformation. The dbt project is located in the `dbt/` directory.
-
-To run dbt transformations:
-
-```bash
-docker exec -it <airflow-or-dbt-container> bash
-cd /opt/airflow/dbt
-# Configure your dbt profile for PostgreSQL connection
-# Then run:
-dbt run
-```
-
-## 8. Analytics with Power BI
+## Analytics with Power BI
 
 - Connect Power BI Desktop to the PostgreSQL database.
 - Build dashboards and reports on top of the dbt models.
@@ -194,7 +163,6 @@ dbt run
 
 ### Users
 <img width="1505" height="867" alt="users" src="https://github.com/user-attachments/assets/78a9d8c3-629d-4812-8355-77dcad9f6a14" />
-
 
 
 ### 9. Accessing the Services
