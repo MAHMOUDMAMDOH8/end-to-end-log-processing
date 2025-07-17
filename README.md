@@ -43,22 +43,8 @@ This project is an end-to-end big data pipeline for processing, storing, and ana
 - **Interactive Filters**: Drill-down capabilities by time, region, event type
 - **Customizable Alerts**: Configure thresholds for automated notifications
 - **Export Capabilities**: Download reports and data for further analysis
-
-
-## Real-Time Monitoring Dashboard
-
-Our system includes comprehensive real-time monitoring capabilities through Streamlit:
-
-![Real-time Events Dashboard](Monitoring/Real-time%20Events.png)
-*Real-time events dashboard showing live event ingestion, filtering, and inspection*
-
-![Geographic Analysis Dashboard](Monitoring/Geographic%20Analysis.png)
-*Geographic analysis dashboard visualizing user activity by location*
-
-![Pipeline Monitoring Dashboard](Monitoring/Pipeline%20Monitoring.png)
-*Pipeline monitoring dashboard displaying system health, event flow, and error rates*
-
 ## Pipeline Work Completed
+
 ![pipeline](Monitoring/pipeline.png)
 The Airflow DAG (`dags/spark_batch_job_dag.py`) orchestrating the batch processing pipeline from HDFS to PostgreSQL and dbt transformations has been enhanced with the following updates:
 - **Task Organization**: Structured tasks into logical groups for clarity:
@@ -73,28 +59,17 @@ The Airflow DAG (`dags/spark_batch_job_dag.py`) orchestrating the batch processi
 - **Error Handling**: Configured retries (3 for `spark_batch_task`, 2 for others) with delays to ensure robustness.
 - **Accomplishments**: Improved pipeline reliability, visibility, and maintainability, ensuring seamless data flow from HDFS to PostgreSQL with real-time monitoring and error alerts.
 
-## Pipeline Monitoring with Streamlit
-
-You can also monitor your pipeline using the interactive Streamlit dashboard, which provides:
-- Real-time event ingestion and error rates
-- Detailed log inspection and filtering
-- Event type breakdowns and timelines
-- Geographic and real-time event analysis
-
-### To run the Streamlit dashboard:
-
-```bash
-pip install streamlit plotly pandas numpy
-streamlit run streamlit_dashboard.py
-```
-
-- The dashboard will be available at [http://localhost:8501](http://localhost:8501) by default.
-- Use this dashboard for operational monitoring and log inspection.
 
 
-*Comprehensive analytics dashboard displaying key business metrics, user behavior patterns, and performance statistics*
+## Real-Time Monitoring Dashboard
+The project includes interactive Streamlit dashboards for Monitoring data 
+### Live Demo
+> **[Log E-commerce Data](https://end-to-end-log-processing.streamlit.app/)**
 
+Our system includes comprehensive real-time monitoring capabilities through Streamlit:
 
+![Geographic Analysis Dashboard](Monitoring/Geographic%20Analysis.png)
+*Geographic analysis dashboard visualizing user activity by location*
 ## Codebase Index
 
 ### Top-Level Structure
