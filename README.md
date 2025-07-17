@@ -70,43 +70,21 @@ Our system includes comprehensive real-time monitoring capabilities through Stre
 
 ![Geographic Analysis Dashboard](Monitoring/Geographic%20Analysis.png)
 *Geographic analysis dashboard visualizing user activity by location*
-## Codebase Index
 
-### Top-Level Structure
 
-- **Scripts/**
-  - **produser/**
-    - `Producer.py`: Kafka producer for log events
-    - `logs.py`: Log generator logic
-    - `users.json`, `products.json`: Sample data
-  - **Consumer/**
-    - `Consumer.py`: Spark Structured Streaming consumer (reads from Kafka, writes to HDFS)
-  - **spark_jop/**
-    - `batch_jop.py`: Spark batch job (reads from HDFS, writes to PostgreSQL)
-- **dags/**
-  - `batch_job_dag.py`: Airflow DAG for orchestrating batch Spark job and dbt runs
-- **dbt/**
-  - **Ecommerce_model/**: Main dbt project
-    - `dbt_project.yml`: dbt project config
-    - `models/`: dbt models
-      - `staging/`: Staging models (STG_user.sql, STG_Event.sql, STG_orders.sql, STG_Products.sql)
-      - `olap_model/`: OLAP models
-        - `fact/`: Fact tables (Fact_order.sql, Fact_Event.sql)
-        - `dimensions/`: Dimension tables (Dim_users.sql, Dim_product.sql, Dim_date.sql)
-      - `source.yml`: Source table definitions
-    - `snapshots/`: Snapshots (CDC_product.sql)
-    - `seeds/`, `tests/`, `analyses/`, `macros/`, `dbt_packages/`, `logs/`: dbt project structure
-    - `README.md`: dbt project readme
-- **Monitoring/**
-  - `streamlit_dashboard.py`: Streamlit dashboard for real-time monitoring
-  - Dashboard images: EVENTMONITORING.png, STATISTICS_ANALYTICS.png, Real-time Events.png, Geographic Analysis.png, Pipeline Monitoring.png
-- **docker-compose.yaml**: Multi-service orchestration
-- **dockerfile**: Custom Docker build for Airflow
-- **logs/**: Airflow and pipeline logs
-- **hadoop/**: Hadoop binaries (if any)
-- **plugins/**, **includes/**: Airflow plugins and includes
+## Analytics with Power BI
 
----
+- Connect Power BI Desktop to the PostgreSQL database.
+- Build dashboards and reports on top of the dbt models.
+### sales 
+<img width="1507" height="872" alt="sales" src="https://github.com/user-attachments/assets/ae4698c4-4157-4fe3-8952-1f6ff0737ad0" />
+
+### Product
+<img width="1506" height="867" alt="product" src="https://github.com/user-attachments/assets/cf8ebb48-be2b-4206-a439-634ffa2e7289" />
+
+### Users
+<img width="1505" height="867" alt="users" src="https://github.com/user-attachments/assets/78a9d8c3-629d-4812-8355-77dcad9f6a14" />
+
 
 ## dbt Lineage & Data Model
 
@@ -124,20 +102,6 @@ The dbt project models the analytics layer in PostgreSQL, transforming raw event
 See `dbt/Ecommerce_model/models/` for full SQL logic and model details.
 
 
-
-
-## Analytics with Power BI
-
-- Connect Power BI Desktop to the PostgreSQL database.
-- Build dashboards and reports on top of the dbt models.
-### sales 
-<img width="1507" height="872" alt="sales" src="https://github.com/user-attachments/assets/ae4698c4-4157-4fe3-8952-1f6ff0737ad0" />
-
-### Product
-<img width="1506" height="867" alt="product" src="https://github.com/user-attachments/assets/cf8ebb48-be2b-4206-a439-634ffa2e7289" />
-
-### Users
-<img width="1505" height="867" alt="users" src="https://github.com/user-attachments/assets/78a9d8c3-629d-4812-8355-77dcad9f6a14" />
 
 
 
