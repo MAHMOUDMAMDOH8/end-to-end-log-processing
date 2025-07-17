@@ -165,17 +165,6 @@ See `dbt/Ecommerce_model/models/` for full SQL logic and model details.
 <img width="1505" height="867" alt="users" src="https://github.com/user-attachments/assets/78a9d8c3-629d-4812-8355-77dcad9f6a14" />
 
 
-### 9. Accessing the Services
-
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| **Spark UI** | [http://localhost:8080](http://localhost:8080) | - |
-| **HDFS NameNode UI** | [http://localhost:9870](http://localhost:9870) | - |
-| **Streamlit** | [http://localhost:8501](http://localhost:8501) | - |
-| **Airflow UI** | [http://localhost:8082](http://localhost:8082) | airflow/airflow |
-| **PostgreSQL** | Port 5432 | airflow/airflow |
-| **Kafka** | Port 9092 (internal), 29092 (external) | - |
-
 
 ## Database Schemas (Mermaid)
 
@@ -246,20 +235,22 @@ erDiagram
     FACT_EVENT ||--o{ DIM_DATE : "date_sk"
 ```
 
-## Customization
-
-- **Log Generation**: Edit `Scripts/produser/logs.py` to change event types, user/product pools, or log structure.
-- **Consumer Logic**: Edit `Scripts/Consumer/Consumer.py` to change processing, filtering, or output logic.
-- **Batch DAG**: Edit `dags/spark_batch_job_dag.py` to customize the batch ETL logic.
-- **dbt Models**: Edit the `dbt/` project for custom transformations.
-
-
 ## Performance Optimization
 
 - **Kafka**: Adjust partition count and replication factor based on throughput requirements
 - **Spark**: Configure executor memory and cores based on data volume
 - **PostgreSQL**: Configure connection pooling and query optimization
 
+### Accessing the Services
+
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| **Spark UI** | [http://localhost:8080](http://localhost:8080) | - |
+| **HDFS NameNode UI** | [http://localhost:9870](http://localhost:9870) | - |
+| **Streamlit** | [http://localhost:8501](http://localhost:8501) | - |
+| **Airflow UI** | [http://localhost:8082](http://localhost:8082) | airflow/airflow |
+| **PostgreSQL** | Port 5432 | airflow/airflow |
+| **Kafka** | Port 9092 (internal), 29092 (external) | - |
 
 
 
