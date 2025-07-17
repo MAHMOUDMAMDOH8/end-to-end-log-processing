@@ -43,21 +43,30 @@ This project is an end-to-end big data pipeline for processing, storing, and ana
 - **Interactive Filters**: Drill-down capabilities by time, region, event type
 - **Customizable Alerts**: Configure thresholds for automated notifications
 - **Export Capabilities**: Download reports and data for further analysis
-## Pipeline Work Completed
 
+
+##  Pipeline Overview
 ![pipeline](Monitoring/pipeline.png)
-The Airflow DAG (`dags/spark_batch_job_dag.py`) orchestrating the batch processing pipeline from HDFS to PostgreSQL and dbt transformations has been enhanced with the following updates:
-- **Task Organization**: Structured tasks into logical groups for clarity:
-  - `check_services_group`: Verifies PostgreSQL and Spark availability (`check_services_health`).
-  - `validate_and_processing_group`: Validates PostgreSQL data (`validate_postgres_data`) and runs Spark batch job (`spark_batch_task`).
-  - `dbt_group`: Executes dbt snapshots (`dbt_snapshot_task`) and transformations (`dbt_run_task`).
-  - Workflow: `check_services_group >> validate_and_processing_group >> dbt_group`.
-- **Restored Workflow**: Reinstated the original sequence `spark_batch_task >> dbt_snapshot_task >> dbt_run_task` to align with pipeline requirements, processing HDFS data to PostgreSQL and applying dbt models.
-- **Monitoring Enhancements**:
-  - Added Slack notifications for DAG success/failure and individual task failures using `SlackWebhookOperator`.
-  - Implemented email notifications for service downtime via `EmailOperator` (triggered on `check_services_health` failure).
-- **Error Handling**: Configured retries (3 for `spark_batch_task`, 2 for others) with delays to ensure robustness.
-- **Accomplishments**: Improved pipeline reliability, visibility, and maintainability, ensuring seamless data flow from HDFS to PostgreSQL with real-time monitoring and error alerts.
+
+This data pipeline consists of **three main task groups**, orchestrated using Apache Airflow:
+
+### 1.  `check_services_group`
+- **Purpose**: Verifies that all critical services (e.g., PostgreSQL, Spark) are running and healthy.
+- **Task**: `check_services_health` (PythonOperator)
+
+### 2.  `validate_and_processing_group`
+- **Purpose**: Validates raw data from PostgreSQL and processes it using Spark.
+- **Tasks**:
+  - `validate_postgres_data` (PythonOperator)
+  - `spark_batch_task` (BashOperator)
+
+### 3.  `dbt_group`
+- **Purpose**: Runs DBT operations to transform and snapshot data in the warehouse.
+- **Tasks**:
+  - `dbt_snapshot_task` (BashOperator)
+  - `dbt_run_task` (BashOperator)
+
+Each group is encapsulated using Airflow **TaskGroups** for better organization and visualization in the DAG UI.
 
 
 
