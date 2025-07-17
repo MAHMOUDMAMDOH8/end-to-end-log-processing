@@ -74,11 +74,6 @@ streamlit run streamlit_dashboard.py
 - The dashboard will be available at [http://localhost:8501](http://localhost:8501) by default.
 - Use this dashboard for operational monitoring and log inspection.
 
-## Analytics & Statistics Dashboard
-
-Advanced analytics and statistical insights are available through our dedicated analytics dashboard:
-
-![Statistics Analytics Dashboard](Monitoring/STATISTICS_ANALYTICS.png)
 
 *Comprehensive analytics dashboard displaying key business metrics, user behavior patterns, and performance statistics*
 
@@ -255,15 +250,15 @@ cd /opt/airflow/dbt
 dbt run
 ```
 
-### 8. Analytics with Power BI
+## 8. Analytics with Power BI
 
 - Connect Power BI Desktop to the PostgreSQL database.
 - Build dashboards and reports on top of the dbt models.
-#### sales 
+### sales 
 <img width="1507" height="872" alt="sales" src="https://github.com/user-attachments/assets/ae4698c4-4157-4fe3-8952-1f6ff0737ad0" />
-#### Product
+### Product
 <img width="1506" height="867" alt="product" src="https://github.com/user-attachments/assets/cf8ebb48-be2b-4206-a439-634ffa2e7289" />
-#### Users
+### Users
 <img width="1505" height="867" alt="users" src="https://github.com/user-attachments/assets/78a9d8c3-629d-4812-8355-77dcad9f6a14" />
 
 
